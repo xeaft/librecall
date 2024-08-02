@@ -9,7 +9,9 @@ if __name__ != "__main__":
     exit(1)
 
 stuff.info = "-i" in sys.argv
-print(stuff.info)
+
+if stuff.info:
+    print("debug info enabled")
 
 if "-c" in sys.argv or "--config" in sys.argv:
     librecallUI.doUI()
