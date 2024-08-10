@@ -22,3 +22,13 @@ To access your saved screenshots, go into the settings menu (2 paragraphs above)
 All images are in `.png` format. _might be a setting at some point_\
 No "timeline" is available (yet).\
 All screenshots are saved in a sqlite3 database (`images.db`). by default, the db is located under the original directory. this can be changed inside of the config menu
+
+*Currently supporting*:
+ - Windows: default PIL screenshot (Tested on Windows 10 22H2)
+ - MacOS: default PIL screenshot (Not tested)
+ - Linux (Tested on Arch Linux - `6.10.3-arch1-2`):
+    - X11: default PIL screenshot (Tested on [Xfce4](https://www.xfce.org/), [i3wm (i3)](https://i3wm.org/), [KDE Plasma](https://kde.org/plasma-desktop/))
+    - Wayland (Tested on [KDE Plasma](https://kde.org/plasma-desktop/), [GNOME](https://www.gnome.org/)):
+        - [flameshot](https://flameshot.org/)
+        - [gnome-screenshot](https://gitlab.gnome.org/GNOME/gnome-screenshot)
+        - [scrot](https://github.com/resurrecting-open-source-projects/scrot)
