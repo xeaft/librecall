@@ -52,7 +52,7 @@ def getScreenshotBinary():
                 print("Failed to take a screenshot")
                 print(f"Screenshotting tool: {stuff.waylandScreenshotUtil}")
                 print(f"Exception: {e}, {type(e)}")
-                with open(".wayland_fail.log", "w") as f:
+                with open(f"{stuff.fileLocation}/.wayland_fail.log", "w") as f:
                     f.write(traceback.format_exc())
     else:
         screenshotBin = getPILScreenshotBin()

@@ -41,18 +41,17 @@ layout = [
 
     [sg.Text("Screenshot DB location "), sg.Push(), sg.In(f"{currentImageLoc}{sep}{stuff.dbFileName}", key="Librecall_Save_Location_Text", enable_events=True, readonly=True, disabled_readonly_background_color=("#5C5C5C")), sg.FolderBrowse("Select", initial_folder=".", target="Librecall_Save_Location_Text")],
 
-    [sg.Button("Delete screenshots", key="Delete_All", expand_x=True, pad=(0, 20))],
-
     [sg.Button("Extract screenshots", key="Extract_All", expand_x=True)],
-    [sg.Button("View timeline", key="View_Timeline", expand_x=True)]
+    [sg.Button("View timeline", key="View_Timeline", expand_x=True)],
 
+    [sg.Button("Delete screenshots", key="Delete_All", expand_x=True, pad=(5, 20))],
 
 ]
 
 def doUI():
     global currentImageLoc
 
-    window = sg.Window("LibreCall", layout, size=(650, 370))
+    window = sg.Window("LibreCall - Settings", layout, size=(650, 370))
     window.refresh()
 
     while True:

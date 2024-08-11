@@ -31,5 +31,6 @@ All screenshots are saved in a sqlite3 database (`images.db`). by default, the d
     - X11: default PIL screenshot (Tested on [Xfce4](https://www.xfce.org/), [i3wm (i3)](https://i3wm.org/), [KDE Plasma](https://kde.org/plasma-desktop/), [Cutefish](https://cutefish-ubuntu.github.io/), [Budgie](https://buddiesofbudgie.org/), [Deepin](https://www.deepin.org/), [Enlightenment](https://www.enlightenment.org/), [Fluxbox](https://github.com/fluxbox/fluxbox), [MATE](https://mate-desktop.org/) and more from the [Arch DE wiki](https://wiki.archlinux.org/title/Desktop_environment) *([this didnt go really well](/img/des.png))*)
     - Wayland (Tested on [KDE Plasma](https://kde.org/plasma-desktop/), [GNOME](https://www.gnome.org/) and a few WMs):
         - [flameshot](https://flameshot.org/)
+        - [spectacle](https://github.com/KDE/spectacle)
         - [gnome-screenshot](https://gitlab.gnome.org/GNOME/gnome-screenshot)
         - [scrot](https://github.com/resurrecting-open-source-projects/scrot)

@@ -23,6 +23,7 @@ def gnomeScreenshot():
 
 screenshotters = {
     "flameshot": lambda: runCmd(["flameshot", "full", "--raw"]).stdout,
+    "spectacle": lambda: runCmd(["spectacle", "-nbfo", "/dev/stdout"]).stdout,
     "gnome": gnomeScreenshot,
     "scrot": lambda: runCmd(["scrot", "-"]).stdout,
 }

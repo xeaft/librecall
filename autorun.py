@@ -1,9 +1,10 @@
 import shutil
 import sys
 import os
+import stuff
 import subprocess
 
-if os.name.lower() == "nt":
+if stuff.usedOS != "linux":
     raise OSError("This script is designed to run on Linux systems only.")
 
 def getArgv(txt):
@@ -13,18 +14,13 @@ def getArgv(txt):
 
     return None
 
-def isSystemd():
-    systemdText = subprocess.run(["systemctl", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True).stdout
-    return  systemdText.find("See the systemctl(1) man page for details.") > -1 # what a detection..
-
 def disableAutorunService():
     subprocess.run(["systemctl", "--user", "stop", "librecall"])
     subprocess.run(["systemctl", "--user", "disable",  "librecall"])
 
 overrideSystemdCheck = (getArgv("--systemd-override") is not None)
-usingSystemd = isSystemd()
 
-if (not usingSystemd and (not overrideSystemdCheck)):
+if (not stuff.usingSystemd and (not overrideSystemdCheck)):
     raise OSError("This autorun script requires the systemd init system and has detected that you dont use it. If you are using systemd, please use the --systemd-override flag. Otherwise, configure your own autorun system.")
 
 homePath = os.path.expanduser("~")

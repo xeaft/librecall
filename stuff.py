@@ -1,10 +1,17 @@
 import os
+import platform
 import tempfile
 import time
 import sys
 import waylandutil
+import subprocess
+
+def checkSystemd():
+    systemdText = subprocess.run(["systemctl", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True).stdout
+    return  systemdText.find("See the systemctl(1) man page for details.") > -1 # what a detection..
 
 isWindows: bool = os.name.lower().find("nt") > -1
+usedOS = platform.system().lower()
 tmpPath: str = tempfile.gettempdir()
 dbFileName = "images.db"
 cwd = os.getcwd()
@@ -12,6 +19,9 @@ fileLocation = os.path.dirname(os.path.abspath(__file__))
 info = "-i" in sys.argv
 isWayland : bool = False
 waylandScreenshotUtil : str = None
+usingSystemd = False
+if usedOS == "linux":
+    usingSystemd = checkSystemd()
 
 if not isWindows:
     isWayland = waylandutil.isWaylandSession()
