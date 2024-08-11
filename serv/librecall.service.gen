@@ -1,0 +1,9 @@
+[Unit]
+Description=Librecall autorun
+
+[Service]
+ExecStart=<PYTHON_PATH> <SCRIPT_PATH>
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

@@ -9,19 +9,20 @@ defaultConfig : dict[str, Any] = {
     "AUTO_DELETE_TYPE": "Disabled",
     "DELETE_AFTER_PERIOD": 1,
     "SCREENSHOT_FREQUENCY_MS": 3_600_000, # once per hour
-    "SAVE_LOCATION": stuff.getLocation(f"./{stuff.dbFileName}")
+    "SAVE_LOCATION": stuff.getLocation(f"{stuff.home}/{stuff.dbFileName}")
 }
 
 config: dict[str, Any] = {}
+savePath = f"{stuff.home}/settings.json"
 
 def makeConfigIfNotExists() -> None:
     try:
-        file = open("./settings.json", "r")
+        file = open(savePath, "r")
     except:
         if stuff.info:
             print("No existing configuration file. (created)")
 
-        file = open("./settings.json", "w")
+        file = open(savePath, "w")
         file.write(json.dumps(defaultConfig))
     finally:
         if file:
@@ -31,19 +32,19 @@ def loadConfig() -> dict:
     global config
 
     makeConfigIfNotExists()
-    with open("./settings.json", "r") as settingsFile:
+    with open(savePath, "r") as settingsFile:
         settings = settingsFile.read()
         config = json.loads(settings)
 
 def saveConfig() -> bool:
-    shutil.copyfile("./settings.json", "./settings.json.bak")
+    shutil.copyfile(savePath, f"{savePath}.bak")
     fileSaved: bool = _saveConfigFile()
 
     if not fileSaved:
-        shutil.move("./settings.json.bak", "./settings.json")
+        shutil.move(f"{savePath}.bak", savePath)
         return False
     else:
-        os.remove("./settings.json.bak")
+        os.remove(f"{savePath}.bak")
     
     return True
 
@@ -52,7 +53,7 @@ def _saveConfigFile() -> bool:
     succ: bool = False
 
     try:
-        with open("./settings.json", "w") as f:        
+        with open(savePath, "w") as f:        
             f.write(json.dumps(config))
             succ = True
     except:

@@ -6,7 +6,7 @@ import waylandutil
 from errors import DependencyMissingError
 from PIL import ImageGrab
 
-infoFile = "./.last.librerecall"
+infoFile = f"{stuff.home}/.last.librerecall"
 
 def makeFileIfNotExists() -> None:
     try:
