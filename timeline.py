@@ -33,7 +33,7 @@ sg.theme("theme")
 layout = [
     [sg.Push(), sg.Text("Timeline", key="Timeline_Text"), sg.Push()],
     [sg.Slider((0, imageCount - 1), orientation="h", disable_number_display=True, key="Timeline_Slider", enable_events=True, default_value=0, expand_x=True)],
-    [sg.Image(data=images[0]["bin"], key="Image", expand_x=True, expand_y=True)]
+    [sg.Image(key="Image", expand_x=True, expand_y=True)]
 ]
 
 
@@ -57,7 +57,6 @@ def doUI():
     framesSinceResize = 0
 
     if imageCount == 0:
-        print("No Images")
         return
     
     windowSize = (screenSize[0] // 2, screenSize[1] // 2)

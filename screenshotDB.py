@@ -9,7 +9,6 @@ def makeConnection():
     global conn, cursor
 
     loc = config.get("SAVE_LOCATION")
-    print(loc)
     conn = sqlite3.connect(loc)
     cursor = conn.cursor()
 
