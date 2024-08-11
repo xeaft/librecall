@@ -1,4 +1,4 @@
-import librecallUI
+import window
 import stuff
 import sys
 import screenshotter
@@ -10,6 +10,6 @@ if __name__ != "__main__":
 stuff.info = "-i" in sys.argv
 
 if "-c" in sys.argv or "--config" in sys.argv:
-    librecallUI.doUI()
+    window.doUI()
 else:
     screenshotter.doWork()

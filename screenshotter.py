@@ -1,5 +1,5 @@
 import config
-import screenshot_db_thing
+import screenshotDB
 import screenshot
 import time
 import stuff
@@ -7,7 +7,7 @@ import os
 
 def doWork():
     config.loadConfig()
-    screenshot_db_thing.makeConnection()
+    screenshotDB.makeConnection()
     screenshotFreqMS = config.get("SCREENSHOT_FREQUENCY_MS")
     screenshotFreqSeconds = screenshotFreqMS / 1000
     delay = screenshotFreqSeconds / 100
@@ -31,7 +31,7 @@ def doWork():
         if not (lastScreenshotTimeMS and (not (stuff.getTimeMS() >= lastScreenshotTimeMS + screenshotFreqMS))):
             screenshotBin = screenshot.getScreenshotBinary()
             screenshotCreationTime = stuff.getTimeMS()
-            screenshot_db_thing.saveImage(screenshotBin, screenshotCreationTime)
+            screenshotDB.saveImage(screenshotBin, screenshotCreationTime)
 
             if stuff.info:
                 print("Saved a screenshot")
