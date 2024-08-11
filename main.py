@@ -14,7 +14,7 @@ openCfg = "-c" in sys.argv or "--config" in sys.argv
 firstTimeLockFile = f"{stuff.fileLocation}/.firsttime.lck"
 firstTime = not os.path.exists(firstTimeLockFile)
 
-if firstTime:
+if firstTime and not "-s" in sys.argv:
     firstTimeResponse = firstTimeDialogue.doUI()
     if firstTimeResponse == "Closed":
         exit()

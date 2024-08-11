@@ -26,7 +26,8 @@ if (not stuff.usingSystemd and (not overrideSystemdCheck)):
 homePath = os.path.expanduser("~")
 filePath = os.getcwd()
 pythonPath = None
-servicePath = f"{homePath}/.config/systemd/user/librecall.service"
+serviceDir = f"{homePath}/.config/systemd/user"
+servicePath = f"{serviceDir}/librecall.service"
 
 if (getArgv("-r") is not None) or getArgv("--remove") is not None:
     if os.path.exists(servicePath):
@@ -59,6 +60,9 @@ with open("serv/librecall.service.gen", "r") as f:
 
 data = data.replace("<PYTHON_PATH>", pythonPath)
 data = data.replace("<SCRIPT_PATH>",  filePath + "/main.py")
+
+if not os.path.exists(serviceDir):
+    os.makedirs(serviceDir)
 
 with open(servicePath, "w") as f:
     f.write(data)

@@ -2,7 +2,7 @@
 Description=Librecall autorun
 
 [Service]
-ExecStart=<PYTHON_PATH> <SCRIPT_PATH>
+ExecStart=<PYTHON_PATH> <SCRIPT_PATH> -s
 Restart=on-failure
 
 [Install]
