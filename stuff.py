@@ -7,6 +7,8 @@ import waylandutil
 isWindows: bool = os.name.lower().find("nt") > -1
 tmpPath: str = tempfile.gettempdir()
 dbFileName = "images.db"
+cwd = os.getcwd()
+fileLocation = os.path.dirname(os.path.abspath(__file__))
 info = "-i" in sys.argv
 isWayland : bool = False
 waylandScreenshotUtil : str = None

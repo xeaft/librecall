@@ -9,11 +9,11 @@ defaultConfig : dict[str, Any] = {
     "AUTO_DELETE_TYPE": "Disabled",
     "DELETE_AFTER_PERIOD": 1,
     "SCREENSHOT_FREQUENCY_MS": 3_600_000, # once per hour
-    "SAVE_LOCATION": stuff.getLocation(f"{stuff.home}/{stuff.dbFileName}")
+    "SAVE_LOCATION": stuff.getLocation(f"{stuff.fileLocation}/{stuff.dbFileName}")
 }
 
 config: dict[str, Any] = {}
-savePath = f"{stuff.home}/settings.json"
+savePath = f"{stuff.fileLocation}/settings.json"
 
 def makeConfigIfNotExists() -> None:
     try:

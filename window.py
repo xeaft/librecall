@@ -77,7 +77,7 @@ def doUI():
         
         elif event == "Extract_All":
             screenshotDB.makeConnection()
-            screenshotDB.extractAll(f"{stuff.home}/ExtractedImages")
+            screenshotDB.extractAll(f"{stuff.fileLocation}/ExtractedImages")
             screenshotDB.end()
 
         elif event == "Librecall_Auto_Delete_Method":
