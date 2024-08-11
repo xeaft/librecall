@@ -73,9 +73,9 @@ def doUI():
         
         if framesSinceResize > 0:
             framesSinceResize += 1
+            sliderValue = int(values["Timeline_Slider"])
+            renderImage(window, int(sliderValue))
             if framesSinceResize == 5:
-                sliderValue = int(values["Timeline_Slider"])
-                renderImage(window, int(sliderValue))
                 framesSinceResize = 0
 
         if event == "Event":

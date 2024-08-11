@@ -5,7 +5,7 @@ import sys
 import waylandutil
 
 isWindows: bool = os.name.lower().find("nt") > -1
-tmpPath: str = "~/tmp" if not isWindows else tempfile.gettempdir()
+tmpPath: str = tempfile.gettempdir()
 dbFileName = "images.db"
 info = "-i" in sys.argv
 isWayland : bool = False
