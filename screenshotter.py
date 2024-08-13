@@ -24,20 +24,37 @@ def doWork():
 
         # Screenshotting
         lastScreenshotTimeMS = None
+        timeMS = stuff.getTimeMS()
 
         with open(screenshot.infoFile, "r") as infoFile:
             lastScreenshotTimeMS = int(infoFile.read())
         
-        if not (lastScreenshotTimeMS and (not (stuff.getTimeMS() >= lastScreenshotTimeMS + screenshotFreqMS))):
+        if not (lastScreenshotTimeMS and (not (timeMS >= lastScreenshotTimeMS + screenshotFreqMS))) and config.get("ENABLED"):
             screenshotBin = screenshot.getScreenshotBinary()
-            screenshotCreationTime = stuff.getTimeMS()
+            screenshotCreationTime = timeMS
             screenshotDB.saveImage(screenshotBin, screenshotCreationTime)
 
             if stuff.info:
                 print("Saved a screenshot")
                 
             with open(screenshot.infoFile, "w") as infoFile:
-                infoFile.write(str(lastScreenshotTimeMS + screenshotFreqMS))
+                infoFile.write(str(screenshotCreationTime))
         
         # Auto delete
-        ...
+        autoDelType = config.get("AUTO_DELETE_TYPE")
+        autoDelInterval = config.get("DELETE_AFTER_PERIOD")
+        if autoDelType == "Disabled":
+            continue
+        
+        baseTime = 3_600_000 if autoDelType == "Hours" else 86_400_000
+        timeToDel = baseTime * autoDelInterval
+        oldestAllowedTime = timeMS - timeToDel
+        images = screenshotDB.getImages()
+
+        for image in images:
+            if int(image["date"]) < oldestAllowedTime:
+                screenshotDB.deleteImage(image["id"])
+                if stuff.info:
+                    print("Deleted an image")
+            else:
+                break

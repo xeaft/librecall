@@ -1,8 +1,9 @@
+import config
+import datetime
+import imageModifier
 import PySimpleGUI as sg
 import screenshotDB
-import config
-import time
-import imageModifier
+from copy import deepcopy
 
 config.loadConfig()
 screenshotDB.makeConnection()
@@ -11,6 +12,7 @@ screenshotDB.end()
 imageCount = len(images)
 screenSize = sg.Window.get_screen_size()
 screenAR = imageModifier.getAspectRatio(screenSize)
+dateTimeForamt = config.get("DATE_FORMAT")
 
 sg.theme_add_new(
     "theme", 
@@ -32,9 +34,15 @@ sg.theme("theme")
 
 layout = [
     [sg.Push(), sg.Text("Timeline", key="Timeline_Text"), sg.Push()],
+    [sg.Push(), sg.Text("test", key="ImageDate"), sg.Push()],
     [sg.Slider((0, imageCount - 1), orientation="h", disable_number_display=True, key="Timeline_Slider", enable_events=True, default_value=0, expand_x=True)],
     [sg.Image(key="Image", expand_x=True, expand_y=True)]
 ]
+
+def getDate(ms, format):
+    seconds = ms / 1000 
+    date = datetime.datetime.fromtimestamp(seconds)
+    return date.strftime(format)
 
 
 def getElementSize(element):
@@ -46,9 +54,11 @@ def renderImage(window, image):
     origImageBin = images[image]["bin"]
     imageBin = imageModifier.resizeImage(origImageBin, targetSize, screenSize, targetSize)
     window["Image"].update(data=imageBin)
+    imgDate = int(images[image]["date"])
+    window["ImageDate"].update(getDate(imgDate, dateTimeForamt))
 
 def doUI():
-    global currentImageLoc
+    global currentImageLoc, dateTimeForamt
 
     screenshotDB.makeConnection()
     images = screenshotDB.getImages()
@@ -59,8 +69,9 @@ def doUI():
     if imageCount == 0:
         return
     
+    dateTimeForamt = config.get("DATE_FORMAT")
     windowSize = (screenSize[0] // 2, screenSize[1] // 2)
-    window = sg.Window("LibreCall - Timeline", layout, size=windowSize, resizable=True, finalize=True)
+    window = sg.Window("LibreCall - Timeline", deepcopy(layout), size=windowSize, resizable=True, finalize=True)
     window.refresh()
     window.bind('<Configure>',"Event")
     renderImage(window, 0)

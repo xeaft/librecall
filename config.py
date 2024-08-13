@@ -9,7 +9,8 @@ defaultConfig : dict[str, Any] = {
     "AUTO_DELETE_TYPE": "Disabled",
     "DELETE_AFTER_PERIOD": 1,
     "SCREENSHOT_FREQUENCY_MS": 3_600_000, # once per hour
-    "SAVE_LOCATION": stuff.getLocation(f"{stuff.fileLocation}/{stuff.dbFileName}")
+    "SAVE_LOCATION": stuff.getLocation(f"{stuff.fileLocation}/{stuff.dbFileName}"),
+    "DATE_FORMAT": r"%d.%m. %Y %H:%M.%S"
 }
 
 config: dict[str, Any] = {}
@@ -30,11 +31,19 @@ def makeConfigIfNotExists() -> None:
 
 def loadConfig() -> dict:
     global config
-
+    data = {}
     makeConfigIfNotExists()
     with open(savePath, "r") as settingsFile:
         settings = settingsFile.read()
-        config = json.loads(settings)
+        data = json.loads(settings)
+    
+    targetKeys = list(defaultConfig.keys())
+    for i in targetKeys:
+        if i not in data:
+            data[i] = defaultConfig[i]
+
+    config = data
+    
 
 def saveConfig() -> bool:
     shutil.copyfile(savePath, f"{savePath}.bak")

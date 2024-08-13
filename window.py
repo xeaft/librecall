@@ -10,7 +10,7 @@ enabled = config.get("ENABLED")
 autoDeleteType = config.get("AUTO_DELETE_TYPE")
 autoDeleteOptions = ["Hours", "Days", "Disabled"]
 autoDeleteFrequency = config.get("DELETE_AFTER_PERIOD")
-
+dateFormat = config.get("DATE_FORMAT")
 sep = "\\" if stuff.isWindows else "/"
 currentImageLoc = config.get("SAVE_LOCATION").replace(f"{sep}{stuff.dbFileName}", "")
 
@@ -40,6 +40,8 @@ layout = [
     [sg.Text("Auto delete interval "), sg.Push(), sg.Slider((1, 30), orientation="h", disable_number_display=True, key="Librecall_Auto_Delete_Frequency", enable_events=True, default_value=autoDeleteFrequency), sg.Text("{:02}".format(int(autoDeleteFrequency)), key="Librecall_Auto_Delete_Frequency_Text")],
 
     [sg.Text("Screenshot DB location "), sg.Push(), sg.In(f"{currentImageLoc}{sep}{stuff.dbFileName}", key="Librecall_Save_Location_Text", enable_events=True, readonly=True, disabled_readonly_background_color=("#5C5C5C")), sg.FolderBrowse("Select", initial_folder=".", target="Librecall_Save_Location_Text")],
+    [sg.Text("Timeline date format "), sg.Push(), sg.In(f"{dateFormat}", key="Librecall_Timeline_Date_Format", enable_events=True, disabled_readonly_background_color=("#5C5C5C"))],
+
 
     [sg.Button("Extract screenshots", key="Extract_All", expand_x=True)],
     [sg.Button("View timeline", key="View_Timeline", expand_x=True)],
@@ -96,5 +98,7 @@ def doUI():
                 window[event].update(fullFileLoc)
         elif event == "View_Timeline":
             timeline.doUI()
+        elif event == "Librecall_Timeline_Date_Format":
+            config.set("DATE_FORMAT", eventValue)
 
     window.close()

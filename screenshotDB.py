@@ -26,6 +26,9 @@ def saveImage(imgBin, imgCreate):
     cursor.execute("INSERT INTO Images (date_created_ms, image) VALUES (?, ?)", (imgCreate, imgBin))
     conn.commit()
 
+def deleteImage(imageID):
+    cursor.execute("DELETE FROM Images WHERE id = ?", (imageID,))
+    conn.commit()
 
 def extractAll(dir):
     if not os.path.exists(dir):
