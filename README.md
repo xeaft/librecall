@@ -36,7 +36,7 @@ An open-source alternative to Microsoft's "Recall" feature on Windows. Works on 
 <hr>
 
 **Linux:**\
-If you are on Liunx, specifically on a distribution using the `systemd` init system, you can run `python autorun.py` to automatically create and use librecall every time.
+If you are using a distribution using the `systemd` init system, you can run `python autorun.py` to automatically create and use librecall every time.
 To remove the autorun script, you can either
 1) run the `autorun.py` script with the `--remove` (or `-r`, for short) flag => `python autorun.py -r`. this will stop and disable the service, and remove the .service file from your system.
 2) manually stop the service via `systemctl --user stop librecall`. To disable it, so it doesnt run again, you use the `systemctl --user disable librecall`
@@ -53,6 +53,8 @@ Now you have one of 2 options, either manully setup autostart with the steps bel
 
 Or simply, run the `autorun.py` script with `python autorun.py`
 
+<hr>
+
 **Usage (?)**:\
 Run `librecall.py` with either `-c` or `--config` to access the settings menu\
 (that would be `python librecall.py -c`.)
@@ -61,6 +63,8 @@ To view the timeline, use `python librecall.py -c` and press the `View timeline`
 **Additionally:**\
 All images are in `.png` format. _might be a setting at some point_\
 All screenshots are saved in a sqlite3 database (`images.db`). by default, the db is located under the original directory. this can be changed inside of the config menu
+
+<hr>
 
 *Currently supporting*:
  - Windows: default PIL screenshot (Tested on Windows 10 22H2)
