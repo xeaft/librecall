@@ -3,6 +3,7 @@ import datetime
 import imageModifier
 import PySimpleGUI as sg
 import screenshotDB
+import stuff
 from copy import deepcopy
 
 config.loadConfig()
@@ -71,7 +72,7 @@ def doUI():
     
     dateTimeForamt = config.get("DATE_FORMAT")
     windowSize = (screenSize[0] // 2, screenSize[1] // 2)
-    window = sg.Window("LibreCall - Timeline", deepcopy(layout), size=windowSize, resizable=True, finalize=True)
+    window = sg.Window("LibreCall - Timeline", deepcopy(layout), size=windowSize, icon=stuff.getLocation(f"{stuff.fileLocation}/img/icon_transparent.ico"), resizable=True, finalize=True)
     window.refresh()
     window.bind('<Configure>',"Event")
     renderImage(window, 0)

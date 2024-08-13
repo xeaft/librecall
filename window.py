@@ -53,7 +53,7 @@ layout = [
 def doUI():
     global currentImageLoc
 
-    window = sg.Window("LibreCall - Settings", layout, size=(650, 370))
+    window = sg.Window("LibreCall - Settings", layout, size=(650, 370), icon=stuff.getLocation(f"{stuff.fileLocation}/img/icon_transparent.ico"))
     window.refresh()
 
     while True:

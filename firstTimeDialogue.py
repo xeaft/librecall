@@ -106,7 +106,7 @@ def doUI():
     global currentImageLoc
 
     page = 0
-    window = sg.Window("LibreCall - First time use", layout, resizable=True)
+    window = sg.Window("LibreCall - First time use", layout, resizable=True, icon=stuff.getLocation(f"{stuff.fileLocation}/img/icon_transparent.ico"))
     window.refresh()
 
     while True:
