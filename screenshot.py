@@ -35,10 +35,10 @@ def getPILScreenshotBin():
     return imgBin
 
 def getWaylandScreenshotBin():
-    if not stuff.waylandScreenshotUtil:
+    if not stuff.screenshotTool:
         raise DependencyMissingError("No supported screenshotting tool for Wayland available. Read \"Currently supported\" in the README.")
 
-    return waylandutil.screenshotters[stuff.waylandScreenshotUtil]()
+    return waylandutil.screenshotters[stuff.screenshotTool]()
 
 def getScreenshotBinary():
     screenshotBin = None
@@ -50,12 +50,15 @@ def getScreenshotBinary():
                 print("Falied to take a screenshot. This might be an issue with your compositor/screenshotting tool")
             else:
                 print("Failed to take a screenshot")
-                print(f"Screenshotting tool: {stuff.waylandScreenshotUtil}")
+                print(f"Screenshotting tool: {stuff.screenshotTool}")
                 print(f"Exception: {e}, {type(e)}")
                 with open(f"{stuff.fileLocation}/.wayland_fail.log", "w") as f:
                     f.write(traceback.format_exc())
     else:
-        screenshotBin = getPILScreenshotBin()
+        if stuff.screenshotTool == "default":
+            screenshotBin = getPILScreenshotBin()
+        else:
+            screenshotBin = getWaylandScreenshotBin()
 
     if not screenshotBin:
         if stuff.info:

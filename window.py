@@ -3,6 +3,7 @@ import PySimpleGUI as sg
 import stuff
 import screenshotDB
 import timeline
+import waylandutil
 
 config.loadConfig()
 scDelay = str(config.get("SCREENSHOT_FREQUENCY_MS"))
@@ -13,6 +14,9 @@ autoDeleteFrequency = config.get("DELETE_AFTER_PERIOD")
 dateFormat = config.get("DATE_FORMAT")
 sep = "\\" if stuff.isWindows else "/"
 currentImageLoc = config.get("SAVE_LOCATION").replace(f"{sep}{stuff.dbFileName}", "")
+
+screenshotTool = config.get("SCREENSHOT_TOOL")
+screenshotTools = ["default"] + waylandutil.availableScreenshotters
 
 sg.theme_add_new(
     "theme", 
@@ -42,6 +46,7 @@ layout = [
     [sg.Text("Screenshot DB location "), sg.Push(), sg.In(f"{currentImageLoc}{sep}{stuff.dbFileName}", key="Librecall_Save_Location_Text", enable_events=True, readonly=True, disabled_readonly_background_color=("#5C5C5C")), sg.FolderBrowse("Select", initial_folder=".", target="Librecall_Save_Location_Text")],
     [sg.Text("Timeline date format "), sg.Push(), sg.In(f"{dateFormat}", key="Librecall_Timeline_Date_Format", enable_events=True, disabled_readonly_background_color=("#5C5C5C"))],
 
+    [sg.Text("Screenshotting tool "), sg.Push(), sg.Combo(screenshotTools, default_value=screenshotTool, key="Librecall_Screenshot_Tool", enable_events=True, readonly=True)],
 
     [sg.Button("Extract screenshots", key="Extract_All", expand_x=True)],
     [sg.Button("View timeline", key="View_Timeline", expand_x=True)],
@@ -96,9 +101,14 @@ def doUI():
                 config.set("SAVE_LOCATION", fullFileLoc)
                 currentImageLoc = location
                 window[event].update(fullFileLoc)
+
         elif event == "View_Timeline":
             timeline.doUI()
+
         elif event == "Librecall_Timeline_Date_Format":
             config.set("DATE_FORMAT", eventValue)
+
+        elif event == "Librecall_Screenshot_Tool":
+            config.set("SCREENSHOT_TOOL", eventValue)
 
     window.close()

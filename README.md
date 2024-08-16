@@ -70,9 +70,17 @@ All screenshots are saved in a sqlite3 database (`images.db`). by default, the d
  - Windows: default PIL screenshot (Tested on Windows 10 22H2)
  - MacOS: default PIL screenshot (Not tested)
  - Linux (Tested on Arch Linux - `6.10.3-arch1-2`):
-    - X11: default PIL screenshot (Tested on [Xfce4](https://www.xfce.org/), [i3wm (i3)](https://i3wm.org/), [KDE Plasma](https://kde.org/plasma-desktop/), [Cutefish](https://cutefish-ubuntu.github.io/), [Budgie](https://buddiesofbudgie.org/), [Deepin](https://www.deepin.org/), [Enlightenment](https://www.enlightenment.org/), [Fluxbox](https://github.com/fluxbox/fluxbox), [MATE](https://mate-desktop.org/) and more from the [Arch DE wiki](https://wiki.archlinux.org/title/Desktop_environment) *([this didnt go really well](/img/des.png))*)
-    - Wayland (Tested on [KDE Plasma](https://kde.org/plasma-desktop/), [GNOME](https://www.gnome.org/) and a few WMs):
+    - X11: default PIL screenshot (Tested on [Xfce4](https://www.xfce.org/), [i3wm (i3)](https://i3wm.org/), [KDE Plasma](https://kde.org/plasma-desktop/), and a lot more from the [Arch DE wiki](https://wiki.archlinux.org/title/Desktop_environment) *([this didnt go really well](/img/des.png))*)
+    - Wayland (Tested on [KDE Plasma](https://kde.org/plasma-desktop/), [GNOME](https://www.gnome.org/) and a few (a whole 2) WMs.):
         - [flameshot](https://flameshot.org/)
         - [spectacle](https://github.com/KDE/spectacle)
         - [gnome-screenshot](https://gitlab.gnome.org/GNOME/gnome-screenshot)
         - [scrot](https://github.com/resurrecting-open-source-projects/scrot)
+        - [grim](https://sr.ht/~emersion/grim/)
+
+\
+For wayland, not all tools work under all compositors, but all mentioned compositors are supported with if you choose the tool (and set it up correctly).\
+Your compositor not being mentioned doesnt mean it won't work, but dont be surprised if it doesnt.\
+If you have a screenshotting tool thats not supported and can provide raw data of a full monitor screenshot, feel free to open an issue or a pull request with that tool.
+
+For xorg/x11, the default option *should* work pretty much everywhere.

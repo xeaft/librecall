@@ -3,7 +3,6 @@ import platform
 import tempfile
 import time
 import sys
-import waylandutil
 import subprocess
 
 def checkSystemd():
@@ -18,15 +17,13 @@ cwd = os.getcwd()
 fileLocation = os.path.dirname(os.path.abspath(__file__))
 info = "-i" in sys.argv
 isWayland : bool = False
-waylandScreenshotUtil : str = None
+screenshotTool : str = None
 usingSystemd = False
+
 if usedOS == "linux":
     usingSystemd = checkSystemd()
 
-if not isWindows:
-    isWayland = waylandutil.isWaylandSession()
-    if isWayland:
-        waylandScreenshotUtil = waylandutil.getScreenshotUtil()
+
 
 def getLocation(rawPath: str) -> str:
     if isWindows:

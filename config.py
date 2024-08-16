@@ -10,7 +10,8 @@ defaultConfig : dict[str, Any] = {
     "DELETE_AFTER_PERIOD": 1,
     "SCREENSHOT_FREQUENCY_MS": 3_600_000, # once per hour
     "SAVE_LOCATION": stuff.getLocation(f"{stuff.fileLocation}/{stuff.dbFileName}"),
-    "DATE_FORMAT": r"%d.%m. %Y %H:%M.%S"
+    "DATE_FORMAT": r"%d.%m. %Y %H:%M.%S",
+    "SCREENSHOT_TOOL": "default"
 }
 
 config: dict[str, Any] = {}
