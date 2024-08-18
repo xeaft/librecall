@@ -79,7 +79,7 @@ All screenshots are saved in a sqlite3 database (`images.db`). by default, the d
         - [grim](https://sr.ht/~emersion/grim/)
 
 \
-For wayland, not all tools work under all compositors, but all mentioned compositors are supported with if you choose the tool (and set it up correctly).\
+For wayland, not all tools work under all compositors, but all mentioned compositors are supported, you just need to choose the right tool (and set it up correctly).\
 Your compositor not being mentioned doesnt mean it won't work, but dont be surprised if it doesnt.\
 If you have a screenshotting tool thats not supported and can provide raw data of a full monitor screenshot, feel free to open an issue or a pull request with that tool.
 
