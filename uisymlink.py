@@ -1,9 +1,9 @@
 import sys
 import os
-import stuff
+import platform
 import subprocess
 
-if stuff.usedOS != "linux":
+if platform.system().lower() != "linux":
     raise OSError("This script is designed to run on linux systems only")
 
 def getArgv(txt):

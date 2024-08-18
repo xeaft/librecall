@@ -1,27 +1,31 @@
-import stuff
 import json
 import shutil
 import os
+from SystemInfo import SystemInfo
 from typing import Any
+from screenshotters import availableTools
+
+sysInfo = SystemInfo()
 
 defaultConfig : dict[str, Any] = {
     "ENABLED": True,
     "AUTO_DELETE_TYPE": "Disabled",
     "DELETE_AFTER_PERIOD": 1,
     "SCREENSHOT_FREQUENCY_MS": 3_600_000, # once per hour
-    "SAVE_LOCATION": stuff.getLocation(f"{stuff.fileLocation}/{stuff.dbFileName}"),
+    "SAVE_LOCATION": sysInfo.getLocation(sysInfo.dbPath),
     "DATE_FORMAT": r"%d.%m. %Y %H:%M.%S",
-    "SCREENSHOT_TOOL": "default"
+    "SCREENSHOT_TOOL": ("default" if not sysInfo.isWayland else (availableTools[0] if availableTools else "N/A"))
 }
 
 config: dict[str, Any] = {}
-savePath = f"{stuff.fileLocation}/settings.json"
+savePath = f"{sysInfo.dataDir}/settings.json"
 
 def makeConfigIfNotExists() -> None:
+    file = None
     try:
         file = open(savePath, "r")
     except:
-        if stuff.info:
+        if sysInfo.info:
             print("No existing configuration file. (created)")
 
         file = open(savePath, "w")
@@ -42,6 +46,9 @@ def loadConfig() -> dict:
     for i in targetKeys:
         if i not in data:
             data[i] = defaultConfig[i]
+
+    if data["SCREENSHOT_TOOL"] == "default" and sysInfo.isWayland:
+        data["SCREENSHOT_TOOL"] = defaultConfig["SCREENSHOT_TOOL"]
 
     config = data
     
@@ -75,6 +82,6 @@ def get(setting: str) -> Any:
     if setting in config:
         return config[setting]
     
-def set(setting: str, value: Any) -> None:
+def set(setting: str, value: Any) -> bool:
     config[setting] = value
-    saveConfig()
+    return saveConfig()

@@ -4,3 +4,5 @@ __pycache__/*
 *.json
 *.librerecall
 *.lck
+data/*
+AutorunScripts/__pycache__/*

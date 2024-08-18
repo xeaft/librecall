@@ -1,11 +1,12 @@
 import shutil
+import platform
 import sys
 import os
-import stuff
 import subprocess
 
-def doYourThing(argv):
-    if stuff.usedOS != "linux":
+def doYourThing(argv, systemd):
+    OS = platform.system().lower()
+    if OS != "linux":
         raise OSError("This script is designed to run on Linux systems only.")
 
     def getArgv(txt):
@@ -21,11 +22,12 @@ def doYourThing(argv):
 
     overrideSystemdCheck = (getArgv("--systemd-override") is not None)
 
-    if (not stuff.usingSystemd and (not overrideSystemdCheck)):
+    if (not systemd and (not overrideSystemdCheck)):
         raise OSError("This autorun script requires the systemd init system and has detected that you dont use it. If you are using systemd, please use the --systemd-override flag. Otherwise, configure your own autorun system.")
 
     homePath = os.path.expanduser("~")
-    filePath = os.getcwd()
+    filePath = os.path.dirname(os.path.abspath(__file__))
+    scriptPath = os.path.abspath(os.path.join(filePath, '..'))
     pythonPath = None
     serviceDir = f"{homePath}/.config/systemd/user"
     servicePath = f"{serviceDir}/librecall.service"
@@ -56,11 +58,11 @@ def doYourThing(argv):
         pythonPath = getPythonPath()
 
     data = ""
-    with open("serv/librecall.service.gen", "r") as f:
+    with open(f"{filePath}/Service/librecall.service.gen", "r") as f:
         data = f.read()
 
     data = data.replace("<PYTHON_PATH>", pythonPath)
-    data = data.replace("<SCRIPT_PATH>",  filePath + "/librecall.py")
+    data = data.replace("<SCRIPT_PATH>",  scriptPath + "/librecall.py")
 
     if not os.path.exists(serviceDir):
         os.makedirs(serviceDir)
@@ -71,3 +73,4 @@ def doYourThing(argv):
     subprocess.run(["systemctl", "--user", "daemon-reload"])
     disableAutorunService()
     subprocess.run(["systemctl", "--user", "enable", "--now", "librecall"])
+    print("Started librecall service successfully")

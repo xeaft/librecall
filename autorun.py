@@ -1,11 +1,13 @@
-import stuff
-import linuxAutorun
-import windowsAutorun
+import AutorunScripts.linuxAutorun as linuxAutorun
+import AutorunScripts.windowsAutorun as windowsAutorun
 import sys
+from SystemInfo import SystemInfo
 
-if stuff.usedOS == "linux":
-    linuxAutorun.doYourThing(sys.argv)
-elif stuff.usedOS == "windows":
+sysInfo = SystemInfo()
+
+if sysInfo.usedOS == "linux":
+    linuxAutorun.doYourThing(sys.argv, sysInfo.usingSystemd)
+elif sysInfo.usedOS == "windows":
     windowsAutorun.doYourThing(sys.argv)
 else:
     print("This autorun script only supports Windows and Linux (with the systemd init system)")

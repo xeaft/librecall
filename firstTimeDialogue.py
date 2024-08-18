@@ -1,5 +1,7 @@
 import PySimpleGUI as sg
-import stuff
+from SystemInfo import SystemInfo
+
+sysInfo = SystemInfo()
 
 sg.theme_add_new(
     "theme", 
@@ -23,7 +25,7 @@ layout = [
     [sg.Text("")],
     [sg.Push(), sg.Text("Welcome to librecall", key="Title", font=("Helvetica", 18)), sg.Push()],
     [sg.Text("")],
-    [sg.Image(stuff.getLocation(f"{stuff.fileLocation}/img/settingsUI.png"), key="Image", expand_x=True, expand_y=True)],
+    [sg.Image(sysInfo.getLocation(f"{sysInfo.fileLocation}/img/settingsUI.png"), key="Image", expand_x=True, expand_y=True)],
     [sg.Text("")],
     [sg.Text("This window will guide you through the use of librecall. You can skip this at any time.", size=(64, None), key="Description", font=("Helvetica", 12)) ],
     [sg.Text("")],
@@ -74,26 +76,12 @@ pages = [
     },
 ]
 
-if stuff.usedOS == "linux":
-    distro = getDistro()
-    addText = " Unfortunately not the exact distribution."
-    if distro:
-        addText = f" Specifically, {distro}."
-
-    if stuff.usingSystemd:
-        page = {
-            "title": "Auto start",
-            "image": "tux.png",
-            "desc": f"Librecall has detected that you are on (GNU+)Linux.{addText} Also, you are using the systemd init system. For systemd, librecall offers a service that allows you to automatically run librecall on user login. If you would like to use that, run the \"autorun.py\" script in the same directrory."
-        }
-        pages.append(page)
-        
 pageAmt = len(pages)
 
 def updateContent(window, page):
     cPage = pages[page]
     window["Title"].update(cPage["title"])
-    window["Image"].update(stuff.getLocation(f"{stuff.fileLocation}/img/{cPage['image']}"))
+    window["Image"].update(sysInfo.getLocation(f"{sysInfo.fileLocation}/img/{cPage['image']}"))
     window["Description"].update(cPage["desc"])
 
     if page == pageAmt - 1:
@@ -106,7 +94,7 @@ def doUI():
     global currentImageLoc
 
     page = 0
-    window = sg.Window("LibreCall - First time use", layout, resizable=True, icon=stuff.getLocation(f"{stuff.fileLocation}/img/icon_transparent.ico"))
+    window = sg.Window("LibreCall - First time use", layout, resizable=True, icon=sysInfo.getLocation(f"{sysInfo.fileLocation}/img/icon_transparent.ico"))
     window.refresh()
 
     while True:

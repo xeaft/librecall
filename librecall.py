@@ -26,12 +26,36 @@ if "--wayland-tools" in sys.argv:
 import firstTimeDialogue
 import os
 import screenshotter
-import stuff
+import shutil
 import window
+from SystemInfo import SystemInfo
 
-stuff.info = "-i" in sys.argv
+sysInfo = SystemInfo()
+
+
+if not os.path.exists(sysInfo.dataDir):
+    os.makedirs(sysInfo.dataDir)
+
+legacyPaths: list[str] = [
+    os.path.join(sysInfo.fileLocation, ".last.librerecall"),
+    os.path.join(sysInfo.fileLocation, ".firsttime.lck"),
+    os.path.join(sysInfo.fileLocation, "settings.json"),
+    os.path.join(sysInfo.fileLocation, "images.db")
+]
+
+for path in legacyPaths:
+    if os.path.exists(path):
+        ind = path.rindex("/")
+        file = path[ind+1:]
+        newPath = os.path.join(sysInfo.dataDir, file)
+
+        if sysInfo.info:
+            print(f"Moving old file to data directory\t{file} -> data/{file}")
+
+        shutil.move(path, newPath)
+
 openCfg = "-c" in sys.argv or "--config" in sys.argv
-firstTimeLockFile = f"{stuff.fileLocation}/.firsttime.lck"
+firstTimeLockFile = f"{sysInfo.dataDir}/.firsttime.lck"
 firstTime = not os.path.exists(firstTimeLockFile)
 
 if firstTime and not "-s" in sys.argv:

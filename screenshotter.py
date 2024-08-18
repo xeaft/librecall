@@ -1,48 +1,46 @@
-import config
 import screenshotDB
-import screenshot
 import time
-import stuff
 import os
+from ConfigManager import ConfigManager
+from SystemInfo import SystemInfo
+from Screenshotter import Screenshotter
 
 def doWork():
-    config.loadConfig()
+    configManager = ConfigManager()
+    sysInfo = SystemInfo()
     screenshotDB.makeConnection()
-    screenshotFreqMS = config.get("SCREENSHOT_FREQUENCY_MS")
+    screenshotFreqMS = configManager.get("SCREENSHOT_FREQUENCY_MS")
     screenshotFreqSeconds = screenshotFreqMS / 1000
     delay = screenshotFreqSeconds / 100
 
-    try:
-        os.remove(screenshot.file)
-    except:
-        pass
+    sysInfo.makeInfoFileIfNotExists()
 
-    screenshot.makeFileIfNotExists()
+    screenshotter = Screenshotter()
 
     while True:
         time.sleep(delay)
 
         # Screenshotting
         lastScreenshotTimeMS = None
-        timeMS = stuff.getTimeMS()
+        timeMS = sysInfo.getTimeMS()
 
-        with open(screenshot.infoFile, "r") as infoFile:
+        with open(sysInfo.infoFile, "r") as infoFile:
             lastScreenshotTimeMS = int(infoFile.read())
         
-        if not (lastScreenshotTimeMS and (not (timeMS >= lastScreenshotTimeMS + screenshotFreqMS))) and config.get("ENABLED"):
-            screenshotBin = screenshot.getScreenshotBinary()
+        if not (lastScreenshotTimeMS and (not (timeMS >= lastScreenshotTimeMS + screenshotFreqMS))) and configManager.get("ENABLED"):
+            screenshotBin = screenshotter.getScreenshot()
             screenshotCreationTime = timeMS
             screenshotDB.saveImage(screenshotBin, screenshotCreationTime)
 
-            if stuff.info:
+            if sysInfo.info:
                 print("Saved a screenshot")
                 
-            with open(screenshot.infoFile, "w") as infoFile:
+            with open(sysInfo.infoFile, "w") as infoFile:
                 infoFile.write(str(screenshotCreationTime))
         
         # Auto delete
-        autoDelType = config.get("AUTO_DELETE_TYPE")
-        autoDelInterval = config.get("DELETE_AFTER_PERIOD")
+        autoDelType = configManager.get("AUTO_DELETE_TYPE")
+        autoDelInterval = configManager.get("DELETE_AFTER_PERIOD")
         if autoDelType == "Disabled":
             continue
         
@@ -54,7 +52,7 @@ def doWork():
         for image in images:
             if int(image["date"]) < oldestAllowedTime:
                 screenshotDB.deleteImage(image["id"])
-                if stuff.info:
+                if sysInfo.info:
                     print("Deleted an image")
             else:
                 break

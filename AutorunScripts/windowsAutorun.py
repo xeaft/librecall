@@ -4,7 +4,8 @@ import subprocess
 import sys
 
 def doYourThing(argv):
-    directory = os.getcwd() + "\\dist\\Librecall"
+    baseDir = os.path.abspath(os.path.join(os.getcwd(), '..'))
+    directory = baseDir + "\\dist\\Librecall"
     if len(argv) > 1 and argv[1].startswith("directory="):
         directory = argv[1].split("directory=")[1]
 
@@ -12,7 +13,7 @@ def doYourThing(argv):
     shortcut = f"{directory}\\librecall.lnk"
 
     if not os.path.isdir(directory):
-        print("Default build directory doesnt exist, specifiy your executable's directory with --directory=DIR")
+        print("Default dist directory doesnt exist, specifiy your executable's directory with --directory=DIR")
         sys.exit(1)
 
     if not os.path.isfile(executable):
