@@ -25,7 +25,7 @@ if "--wayland-tools" in sys.argv:
 
 import firstTimeDialogue
 import os
-import screenshotter
+import screenshotProcess
 import shutil
 import window
 from SystemInfo import SystemInfo
@@ -69,4 +69,4 @@ if firstTime and not "-s" in sys.argv:
 if openCfg:
     window.doUI()
 else:
-    screenshotter.doWork()
+    screenshotProcess.doWork()

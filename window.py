@@ -1,14 +1,15 @@
 import os
 import PySimpleGUI as sg
-import screenshotDB
 import timeline
 from ConfigManager import ConfigManager
+from DatabaseHandler import DatabaseHandler
 from screenshotters import availableTools
 from SystemInfo import SystemInfo
 
 def doUI():
     configManager = ConfigManager()
     sysInfo = SystemInfo()
+    dbHandler = DatabaseHandler()
 
     scDelay = str(configManager.get("SCREENSHOT_FREQUENCY_MS"))
     enabled = configManager.get("ENABLED")
@@ -78,14 +79,14 @@ def doUI():
             configManager.set("ENABLED", eventValue)
 
         elif event == "Delete_All":
-            screenshotDB.makeConnection()
-            screenshotDB.deleteAll()
-            screenshotDB.end()
+            dbHandler.makeConnection()
+            dbHandler.deleteAll()
+            dbHandler.endConnection()
         
         elif event == "Extract_All":
-            screenshotDB.makeConnection()
-            screenshotDB.extractAll(f"{sysInfo.fileLocation}/ExtractedImages")
-            screenshotDB.end()
+            dbHandler.makeConnection()
+            dbHandler.extractAll(f"{sysInfo.fileLocation}/ExtractedImages")
+            dbHandler.endConnection()
 
         elif event == "Librecall_Auto_Delete_Method":
             configManager.set("AUTO_DELETE_TYPE", eventValue)

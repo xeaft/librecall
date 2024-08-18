@@ -1,14 +1,16 @@
-import screenshotDB
 import time
 import os
 from ConfigManager import ConfigManager
+from DatabaseHandler import DatabaseHandler
 from SystemInfo import SystemInfo
 from Screenshotter import Screenshotter
 
 def doWork():
     configManager = ConfigManager()
     sysInfo = SystemInfo()
-    screenshotDB.makeConnection()
+    dbHandler = DatabaseHandler()
+
+    dbHandler.makeConnection()
     screenshotFreqMS = configManager.get("SCREENSHOT_FREQUENCY_MS")
     screenshotFreqSeconds = screenshotFreqMS / 1000
     delay = screenshotFreqSeconds / 100
@@ -30,7 +32,7 @@ def doWork():
         if not (lastScreenshotTimeMS and (not (timeMS >= lastScreenshotTimeMS + screenshotFreqMS))) and configManager.get("ENABLED"):
             screenshotBin = screenshotter.getScreenshot()
             screenshotCreationTime = timeMS
-            screenshotDB.saveImage(screenshotBin, screenshotCreationTime)
+            dbHandler.saveImage(screenshotBin, screenshotCreationTime)
 
             if sysInfo.info:
                 print("Saved a screenshot")
@@ -47,12 +49,14 @@ def doWork():
         baseTime = 3_600_000 if autoDelType == "Hours" else 86_400_000
         timeToDel = baseTime * autoDelInterval
         oldestAllowedTime = timeMS - timeToDel
-        images = screenshotDB.getImages()
+        images = dbHandler.getImages()
 
         for image in images:
             if int(image["date"]) < oldestAllowedTime:
-                screenshotDB.deleteImage(image["id"])
+                dbHandler.deleteImage(image["id"])
                 if sysInfo.info:
                     print("Deleted an image")
             else:
                 break
+    
+    dbHandler.endConnection()

@@ -1,17 +1,19 @@
 import datetime
 import imageModifier
 import PySimpleGUI as sg
-import screenshotDB
+from DatabaseHandler import DatabaseHandler
 from copy import deepcopy
 from ConfigManager import ConfigManager
 from SystemInfo import SystemInfo
 
 def doUI():
     configManager = ConfigManager()
+    dbHandler = DatabaseHandler()
     sysInfo = SystemInfo()
-    screenshotDB.makeConnection()
-    images = screenshotDB.getImages()
-    screenshotDB.end()
+
+    dbHandler.makeConnection()
+    images = dbHandler.getImages()
+    dbHandler.endConnection()
     imageCount = len(images)
     screenSize = sg.Window.get_screen_size()
     screenAR = imageModifier.getAspectRatio(screenSize)
@@ -56,7 +58,7 @@ def doUI():
     layout = [
         [sg.Push(), sg.Text("Timeline", key="Timeline_Text"), sg.Push()],
         [sg.Push(), sg.Text("test", key="ImageDate"), sg.Push()],
-        [sg.Slider((0, imageCount - 1), orientation="h", disable_number_display=True, key="Timeline_Slider", enable_events=True, default_value=0, expand_x=True)],
+        [sg.Text(f"1/{imageCount}", key="Image_Index"), sg.Slider(range=(0, imageCount - 1), orientation="h", disable_number_display=True, key="Timeline_Slider", enable_events=True, default_value=0, expand_x=True), sg.Button("Delete Image", key="Delete_Image")],
         [sg.Image(key="Image", expand_x=True, expand_y=True)]
     ]
 
@@ -94,6 +96,29 @@ def doUI():
                 renderImage(window, int(sliderValue))
                 framesSinceResize = 1
 
-        if event == "Timeline_Slider":
-            if eventValue:
+        elif event == "Timeline_Slider":
+            if eventValue is not None:
                 renderImage(window, int(eventValue))
+                window["Image_Index"].update(f"{int(eventValue) + 1}/{imageCount}")
+                print(eventValue)
+
+        elif event == "Delete_Image":
+            dbHandler.makeConnection()
+            sliderVal = int(values["Timeline_Slider"])
+            
+            imageID = images[sliderVal]["id"]
+            dbHandler.deleteImage(imageID)
+            images = dbHandler.getImages()
+            imageCount = len(images)
+
+            if sliderVal >= len(images):
+                window["Timeline_Slider"].update(value=imageCount - 1)
+                renderImage(window, imageCount - 1)
+                window["Image_Index"].update(f"{imageCount}/{imageCount}")
+            else:
+                renderImage(window, sliderVal)
+                window["Image_Index"].update(f"{sliderVal + 1}/{imageCount}")
+
+            window["Timeline_Slider"].update(range=(0, imageCount - 1))
+
+            dbHandler.endConnection()
