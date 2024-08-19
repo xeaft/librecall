@@ -23,7 +23,6 @@ if "--wayland-tools" in sys.argv:
     """)
     sys.exit(0)
 
-import firstTimeDialogue
 import os
 import screenshotProcess
 import shutil
@@ -58,15 +57,16 @@ openCfg = "-c" in sys.argv or "--config" in sys.argv
 firstTimeLockFile = f"{sysInfo.dataDir}/.firsttime.lck"
 firstTime = not os.path.exists(firstTimeLockFile)
 
-if firstTime and not "-s" in sys.argv:
-    firstTimeResponse = firstTimeDialogue.doUI()
-    if firstTimeResponse == "Closed":
-        sys.exit(0)
-    with open(firstTimeLockFile, "w"):
-        pass
-    openCfg = True
+# not remade yet
+# if firstTime and not "-s" in sys.argv:
+#     firstTimeResponse = firstTimeDialogue.doUI()
+#     if firstTimeResponse == "Closed":
+#         sys.exit(0)
+#     with open(firstTimeLockFile, "w"):
+#         pass
+#     openCfg = True
 
 if openCfg:
-    window.doUI()
+    window.createSettingsWindow()
 else:
     screenshotProcess.doWork()

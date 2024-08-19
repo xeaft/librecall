@@ -31,7 +31,7 @@ def resizeImagePost(imageBin, targetSize: tuple[int, int]):
     resizedImage.save(resizedImage_stream, format='PNG')
     resizedImageBin = resizedImage_stream.getvalue()
     
-    return resizedImageBin
+    return resizedImageBin, targetSize
 
 
 def resizeImage(imageBin, targetSize, screenSize, limit):

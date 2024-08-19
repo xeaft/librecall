@@ -41,7 +41,7 @@ class DatabaseHandler:
         self.cursor.execute("DELETE FROM Images WHERE id = ?", (imageID,))
         self.conn.commit()
 
-    def extractAll(self, dir):
+    def extportAll(self, dir):
         if not os.path.exists(dir):
             os.makedirs(dir)
 

@@ -1,12 +1,81 @@
 import datetime
 import imageModifier
-import PySimpleGUI as sg
-from DatabaseHandler import DatabaseHandler
+import WindowComponents
 from copy import deepcopy
 from ConfigManager import ConfigManager
+from DatabaseHandler import DatabaseHandler
 from SystemInfo import SystemInfo
 
-def doUI():
+images = []
+imageRenderer = None
+lastResizeTimeMS = SystemInfo.getTimeMS()
+datetimeText = None
+oldSliderVal = 0
+
+def getDate(ms, format):
+    seconds = ms / 1000 
+    date = datetime.datetime.fromtimestamp(seconds)
+    return date.strftime(format)
+
+
+def getElementSize(widget):
+    return widget.winfo_width(), widget.winfo_height()
+
+def resizeWindow(width, height):
+    WindowComponents.Base.timeline.geometry(f"{width}x{height}")
+    WindowComponents.Base.timelineWidth = width
+    WindowComponents.Base.timelineHeight = height
+
+def handleResize(event):
+    global lastResizeTimeMS
+
+    width = event.width
+    height = event.height
+
+    def render():
+        newWidth = WindowComponents.Base.timeline.winfo_width()
+        newHeight = WindowComponents.Base.timeline.winfo_height()
+
+        if newWidth == width and newHeight == height and imageRenderer:
+            imageRenderer.renderImageFromBin(images[WindowComponents.Base.timelineCurrentImage]["bin"])
+
+
+    if width != WindowComponents.Base.timelineWidth or height != WindowComponents.Base.timelineHeight:
+        WindowComponents.Base.timelineWidth = width
+        WindowComponents.Base.timelineHeight = height
+        WindowComponents.Base.timeline.after(75, render)
+
+def createToplevel():
+    WindowComponents.Base.timelineWidth = WindowComponents.Base.screenSize[0] // 2
+    WindowComponents.Base.timelineHeight = WindowComponents.Base.screenSize[1] // 2
+
+    WindowComponents.Base.timeline = WindowComponents.Base.ctk.CTkToplevel()
+    WindowComponents.Base.timeline.title("Librecall - Timeline")
+
+    WindowComponents.Base.timeline.geometry(f"{WindowComponents.Base.timelineWidth}x{WindowComponents.Base.timelineHeight}")
+    WindowComponents.Base.timeline.focus()
+
+    WindowComponents.Base.timeline.bind("<Configure>", handleResize)
+
+def onImageRender():
+    image = images[WindowComponents.Base.timelineCurrentImage]
+    datetimeFormat = ConfigManager().get("DATE_FORMAT")
+    time = int(image["date"])
+
+    if datetimeText:
+        datetimeText.setText(getDate(time, datetimeFormat))
+
+def handleSlider(val):
+    oldimg = WindowComponents.Base.timelineCurrentImage
+    WindowComponents.Base.timelineCurrentImage = val
+    if oldimg != val:
+        imageRenderer.renderImageFromBin(images[WindowComponents.Base.timelineCurrentImage]["bin"])
+
+def createTimelineWindow():
+    global images, imageRenderer, datetimeText
+    if WindowComponents.Base.timeline and WindowComponents.Base.timeline.winfo_exists():
+        return
+
     configManager = ConfigManager()
     dbHandler = DatabaseHandler()
     sysInfo = SystemInfo()
@@ -14,111 +83,59 @@ def doUI():
     dbHandler.makeConnection()
     images = dbHandler.getImages()
     dbHandler.endConnection()
-    imageCount = len(images)
-    screenSize = sg.Window.get_screen_size()
-    screenAR = imageModifier.getAspectRatio(screenSize)
-    dateTimeForamt = configManager.get("DATE_FORMAT")
-
-    def getDate(ms, format):
-        seconds = ms / 1000 
-        date = datetime.datetime.fromtimestamp(seconds)
-        return date.strftime(format)
-
-
-    def getElementSize(element):
-        tkWidget = element.Widget
-        return tkWidget.winfo_width(), tkWidget.winfo_height()
-
-    def renderImage(window, image):
-        targetSize = getElementSize(window["Image"])
-        origImageBin = images[image]["bin"]
-        imageBin = imageModifier.resizeImage(origImageBin, targetSize, screenSize, targetSize)
-        window["Image"].update(data=imageBin)
-        imgDate = int(images[image]["date"])
-        window["ImageDate"].update(getDate(imgDate, dateTimeForamt))
-
-    sg.theme_add_new(
-        "theme", 
-        {
-            "BACKGROUND": "#1e1e1e", 
-            "TEXT": "#b9b9b9", 
-            "INPUT": "#5c5c5c", 
-            "TEXT_INPUT": "#b9b9b9", 
-            "SCROLL": "#5c5c5c", 
-            "BUTTON": ("#b9b9b9", "#5c5c5c"), 
-            "PROGRESS": ("#5c5c5c", "#b9b9b9"), 
-            "BORDER": 0, 
-            "SLIDER_DEPTH": 0, 
-            "PROGRESS_DEPTH": 0, 
-        }
-    )
-
-    sg.theme("theme")
-
-    layout = [
-        [sg.Push(), sg.Text("Timeline", key="Timeline_Text"), sg.Push()],
-        [sg.Push(), sg.Text("test", key="ImageDate"), sg.Push()],
-        [sg.Text(f"1/{imageCount}", key="Image_Index"), sg.Slider(range=(0, imageCount - 1), orientation="h", disable_number_display=True, key="Timeline_Slider", enable_events=True, default_value=0, expand_x=True), sg.Button("Delete Image", key="Delete_Image")],
-        [sg.Image(key="Image", expand_x=True, expand_y=True)]
-    ]
 
     imageCount = len(images)
-    framesSinceResize = 0
 
-    if imageCount == 0:
+    if not imageCount:
+        WindowComponents.Notification("No images", "You don't have any screenshots stored that can be viewed here.")
         return
+
+    createToplevel()
+    screenAR = imageModifier.getAspectRatio(WindowComponents.Base.screenSize)
+
+    toplevel = WindowComponents.Base.timeline
+    ctk = WindowComponents.Base.ctk
+
+    blankSpace = WindowComponents.TextLabel("", _app=toplevel)
+    blankSpace.label.configure(font=(None, 2))
+    toplevel.grid_rowconfigure(0, pad=1)
+
+    titleText = WindowComponents.TextLabel("Timeline", _app=toplevel, align="center")
+    titleText.label.configure(font=(None, 18))
+
+    datetimeText = WindowComponents.TextLabel("datetime", _app=toplevel, align="center")
+    datetimeText.label.configure(font=(None,  14))
+
+    slider = WindowComponents.Slider("Image", 0, 0, imageCount - 1, _app=toplevel, _callback=handleSlider)
+
+    imageRenderer = WindowComponents.ImagePreview(app=toplevel, onImageRender=onImageRender)
     
-    dateTimeForamt = configManager.get("DATE_FORMAT")
-    windowSize = (screenSize[0] // 2, screenSize[1] // 2)
-    window = sg.Window("LibreCall - Timeline", deepcopy(layout), size=windowSize, icon=sysInfo.getLocation(f"{sysInfo.fileLocation}/img/icon_transparent.ico"), resizable=True, finalize=True)
-    window.refresh()
-    window.bind('<Configure>',"Event")
-    renderImage(window, 0)
+    def deleteImage():
+        global imageCount, images
 
-    while True:
-        event, values = window.read()
-        eventValue = values[event] if (values and event in values) else None
-        if event == sg.WIN_CLOSED:
-            break
+        dbHandler.makeConnection()
+        sliderVal = slider.getValue()
         
-        if framesSinceResize > 0:
-            framesSinceResize += 1
-            sliderValue = int(values["Timeline_Slider"])
-            renderImage(window, int(sliderValue))
-            if framesSinceResize == 5:
-                framesSinceResize = 0
+        imageID = images[sliderVal]["id"]
+        dbHandler.deleteImage(imageID)
+        images = dbHandler.getImages()
+        imageCount = len(images)
 
-        if event == "Event":
-            if window.size != windowSize:
-                window.Size = imageModifier.adjustAspectRatio(window.size, screenAR, screenSize)
-                windowSize = window.size
-                sliderValue = int(values["Timeline_Slider"])
-                renderImage(window, int(sliderValue))
-                framesSinceResize = 1
+        if not imageCount:
+            toplevel.destroy()
+        elif imageCount == 1:
+            slider.slider.configure(state="disabled")
+            slider.valueText.configure(text="0 (only value)")
+        else:
+            slider.slider.configure(from_=0, to=imageCount - 1)
 
-        elif event == "Timeline_Slider":
-            if eventValue is not None:
-                renderImage(window, int(eventValue))
-                window["Image_Index"].update(f"{int(eventValue) + 1}/{imageCount}")
-                print(eventValue)
+        if sliderVal >= imageCount and imageCount:
+            slider.slider.set(imageCount - 1)
+            slider._callback(imageCount - 1)
+        else:
+            if imageCount:
+                imageRenderer.renderImageFromBin(images[sliderVal]["bin"])
 
-        elif event == "Delete_Image":
-            dbHandler.makeConnection()
-            sliderVal = int(values["Timeline_Slider"])
-            
-            imageID = images[sliderVal]["id"]
-            dbHandler.deleteImage(imageID)
-            images = dbHandler.getImages()
-            imageCount = len(images)
+        dbHandler.endConnection()
 
-            if sliderVal >= len(images):
-                window["Timeline_Slider"].update(value=imageCount - 1)
-                renderImage(window, imageCount - 1)
-                window["Image_Index"].update(f"{imageCount}/{imageCount}")
-            else:
-                renderImage(window, sliderVal)
-                window["Image_Index"].update(f"{sliderVal + 1}/{imageCount}")
-
-            window["Timeline_Slider"].update(range=(0, imageCount - 1))
-
-            dbHandler.endConnection()
+    deleteImageButton = WindowComponents.FullWidthButton("Delete this image", deleteImage, _app=toplevel)

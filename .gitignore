@@ -5,4 +5,12 @@ __pycache__/*
 *.librerecall
 *.lck
 data/*
-AutorunScripts/__pycache__/*
+*/__pycache__/*
+include/*
+lib/*
+lib64/*
+bin/*
+pyvenv.cfg
+build/*
+dist/*
+*.spec

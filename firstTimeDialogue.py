@@ -1,46 +1,6 @@
-import PySimpleGUI as sg
-from SystemInfo import SystemInfo
-
-sysInfo = SystemInfo()
-
-sg.theme_add_new(
-    "theme", 
-    {
-        "BACKGROUND": "#1e1e1e", 
-        "TEXT": "#b9b9b9", 
-        "INPUT": "#5c5c5c", 
-        "TEXT_INPUT": "#b9b9b9", 
-        "SCROLL": "#5c5c5c", 
-        "BUTTON": ("#b9b9b9", "#5c5c5c"), 
-        "PROGRESS": ("#5c5c5c", "#b9b9b9"), 
-        "BORDER": 0, 
-        "SLIDER_DEPTH": 0, 
-        "PROGRESS_DEPTH": 0, 
-    }
-)
-
-sg.theme("theme")
-
-layout = [
-    [sg.Text("")],
-    [sg.Push(), sg.Text("Welcome to librecall", key="Title", font=("Helvetica", 18)), sg.Push()],
-    [sg.Text("")],
-    [sg.Image(sysInfo.getLocation(f"{sysInfo.fileLocation}/img/settingsUI.png"), key="Image", expand_x=True, expand_y=True)],
-    [sg.Text("")],
-    [sg.Text("This window will guide you through the use of librecall. You can skip this at any time.", size=(64, None), key="Description", font=("Helvetica", 12)) ],
-    [sg.Text("")],
-    [sg.Button("Skip", key="SkipIntro"), sg.Push(), sg.Button("Previous", key="PreviousPage"), sg.Button("Next", key="NextPage")]
-]
-
-def getDistro():
-    try:
-        with open('/etc/os-release') as f:
-            lines = f.readlines()
-        for line in lines:
-            if line.startswith('NAME='):
-                return line.split('=')[1].strip().strip('"')
-    except FileNotFoundError:
-        return None
+import sys
+sys.exit(8)
+# will be made soon
 
 
 pages = [
@@ -88,33 +48,3 @@ def updateContent(window, page):
         window["NextPage"].update("Finish")
     else:
         window["NextPage"].update("Next")
-
-
-def doUI():
-    global currentImageLoc
-
-    page = 0
-    window = sg.Window("LibreCall - First time use", layout, resizable=True, icon=sysInfo.getLocation(f"{sysInfo.fileLocation}/img/icon_transparent.ico"))
-    window.refresh()
-
-    while True:
-        event, values = window.read()
-        if event == sg.WIN_CLOSED:
-            return "Closed"
-
-        elif event == "NextPage":
-            if page < pageAmt - 1:
-                page += 1
-                updateContent(window, page)
-            else:
-                window.close()
-                break
-
-        elif event == "PreviousPage":
-            if page > 0:
-                page -= 1
-                updateContent(window, page)
-        
-        elif event == "SkipIntro":
-            window.close()
-            break

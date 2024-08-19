@@ -47,7 +47,8 @@ class SystemInfo:
         if self.usedOS != "linux": return False;
         return os.getenv("XDG_SESSION_TYPE") == "wayland"
 
-    def getTimeMS(self) -> int:
+    @staticmethod
+    def getTimeMS(self=None) -> int:
         return time.time_ns() // 1_000_000
 
     def makeInfoFileIfNotExists(self) -> None:
