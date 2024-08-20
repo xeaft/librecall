@@ -34,3 +34,19 @@ class ImagePreview(BaseSetting):
         self.label.configure(image=self.image)
 
         self.callback()
+
+    def renderImage(self, path):
+        targetSize = Base.getElementSize(self.label)
+        origImageBin = None
+
+        with open(path, "rb") as f:
+            origImageBin = f.read()
+
+        imageBin, imageSize = imageModifier.resizeImage(origImageBin, targetSize, Base.screenSize, targetSize)
+        pilImage = Image.open(io.BytesIO(imageBin))
+        image = ctk.CTkImage(dark_image=pilImage, light_image=pilImage, size=imageSize)
+
+        self.image = image
+        self.label.configure(image=self.image)
+
+        self.callback()

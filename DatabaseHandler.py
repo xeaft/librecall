@@ -41,15 +41,15 @@ class DatabaseHandler:
         self.cursor.execute("DELETE FROM Images WHERE id = ?", (imageID,))
         self.conn.commit()
 
-    def extportAll(self, dir):
+    def exportAll(self, dir):
         if not os.path.exists(dir):
             os.makedirs(dir)
 
         self.cursor.execute("SELECT id, date_created_ms, image FROM Images")
-        images = cursor.fetchall()
+        images = self.cursor.fetchall()
         
         for image_id, date, blob_data in images:
-            outputFP = os.path.join(dir, f"{date}_{image_id}.jpg")
+            outputFP = os.path.join(dir, f"{date}_{image_id}.png")
             
             with open(outputFP, "wb") as file:
                 file.write(blob_data)

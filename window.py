@@ -14,6 +14,8 @@ def createWindow():
 def createSettingsWindow():
     if not WindowComponents.Base.app:
         createWindow()
+    
+    WindowComponents.BaseSetting.elements[WindowComponents.Base.app] = []
 
     configManager = ConfigManager()
     sysInfo = SystemInfo()
@@ -54,7 +56,7 @@ def createSettingsWindow():
 
     def button_exportScreenshots():
         databaseHandler.makeConnection()
-        databaseHandler.extractAll(sysInfo.getLocation(sysInfo.fileLocation) + "/ExtractedImages")
+        databaseHandler.exportAll(sysInfo.getLocation(sysInfo.fileLocation) + "/ExtractedImages")
         databaseHandler.endConnection()
 
     enableScreenshotsCheckbox = WindowComponents.Checkbox("Enable screenshots", configManager.get("ENABLED"), "Enabled", "Disabled", toggle_enableScreenshots)
