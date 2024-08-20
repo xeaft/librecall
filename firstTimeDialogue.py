@@ -12,7 +12,7 @@ pages = [
     {
         "title": "How it works",
         "image": "timeSetting.png",
-        "desc": "Every X seconds, librecall takes a picture of your screen and stores it in a\ndatabase on your device. The frequency of screenshots can be modified in the\nsettings"
+        "desc": "Every X minutes, librecall takes a picture of your screen and stores it in a\ndatabase on your device. The frequency of screenshots can be modified in the\nsettings"
     },
     {
         "title": "The settings",
