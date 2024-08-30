@@ -9,7 +9,7 @@ def hasCmd(cmd : str) -> bool:
 
 def gnomeScreenshot():
     filename = ".lc-gnome-sc.tmp.png"
-    runCmd(["gnome-screenshot", "-f", filename], True)
+    runCmd(["gnome-screenshot", "-f", filename])
     data = None
 
     with open(filename, "rb") as f:

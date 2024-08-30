@@ -28,7 +28,7 @@ class TextInput(BaseSetting):
                     self.clear()
                     self.textbox.insert("0.0", newText)
 
-            self.callback(self.get())
+            self.callback(self.get().replace("\n", ""))
         
         # fix a newline bug
         val = self.get()

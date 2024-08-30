@@ -1,14 +1,21 @@
 import screenshotters
 import timeline
 import WindowComponents
+import passPrompts
+import passwd
+import sys
 from ConfigManager import ConfigManager
 from SystemInfo import SystemInfo
 from DatabaseHandler import DatabaseHandler
 
 def createWindow():
     WindowComponents.Base.app = WindowComponents.Base.ctk.CTk()
-    WindowComponents.Base.app.geometry("650x405")
-    WindowComponents.Base.app.title("Librecall")
+    WindowComponents.Base.app.geometry("650x505")
+    winAddText = ""
+    sysinfo = SystemInfo()
+    if sysinfo.usedOS == "linux":
+        winAddText = f" ({'Wayland' if sysinfo.isWaylandSession() else 'X11'})" # yet it runs under xwayland
+    WindowComponents.Base.app.title("Librecall" + winAddText)
     WindowComponents.Base.app.resizable(False, False)
 
 def createSettingsWindow():
@@ -59,6 +66,37 @@ def createSettingsWindow():
         databaseHandler.exportAll(sysInfo.getLocation(sysInfo.fileLocation) + "/ExtractedImages")
         databaseHandler.endConnection()
 
+    def toggle_usePassword(value):
+        ftime = False
+        if configManager.get("SALT") == "":
+            ftime = True
+
+        def saveUsePass():
+            configManager.set("USE_PASSWORD", value)
+
+        def winClose():
+            WindowComponents.Base.app.destroy()
+            sys.exit(10)
+
+        if value:
+            passPrompts.passInput(ftime, saveUsePass, onQuit=winClose)
+        else:
+            databaseHandler.makeConnection()
+            databaseHandler.decryptImages(passwd.passhash)
+            databaseHandler.endConnection()
+            passwd.passhash = ""
+            passwd.salt = ""
+            passwd.basekey = ""
+            configManager.set("SALT", "")
+            configManager.set("BASEKEY", "")
+            saveUsePass()
+
+    def button_changePass():
+        if configManager.get("USE_PASSWORD"):
+            passPrompts.passChange()
+        else:
+            WindowComponents.Notification("Cannot do that", "You dont use a password... why do you try to change it?")
+
     enableScreenshotsCheckbox = WindowComponents.Checkbox("Enable screenshots", configManager.get("ENABLED"), "Enabled", "Disabled", toggle_enableScreenshots)
     screenshotFrequencySlider = WindowComponents.Slider("Screenshot frequency (min)", configManager.get("SCREENSHOT_FREQUENCY_MS") / 1000 / 60, 1, 1440, True, slider_screenshotFrequency)
 
@@ -69,8 +107,11 @@ def createSettingsWindow():
 
     dateTimeFormatTextbox = WindowComponents.TextInput("Timeline date format", configManager.get("DATE_FORMAT"), textbox_dateFormat)
 
-    screenshottingToolDropdown = WindowComponents.Dropdown("Screenshotting tool", screenshotters.availableTools, None, dropdown_screenshottingTool)
+    screenshottingToolDropdown = WindowComponents.Dropdown("Screenshotting tool", screenshotters.availableTools, configManager.get("SCREENSHOT_TOOL"), dropdown_screenshottingTool)
 
+    passwordCheckbox = WindowComponents.Checkbox("Use password encryption", configManager.get("USE_PASSWORD"), "Enabled", "Disabled", toggle_usePassword)
+
+    viewTimelineButton = WindowComponents.FullWidthButton("Change Password", button_changePass)
     viewTimelineButton = WindowComponents.FullWidthButton("View Timeline", button_viewTimeline)
     exportScreenshotsButton = WindowComponents.FullWidthButton("Export screenshots", button_exportScreenshots)
     deleteScreenshotsButton = WindowComponents.FullWidthButton("Delete screenshots", button_deleteScreenshots)

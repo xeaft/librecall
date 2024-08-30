@@ -3,6 +3,7 @@ import customtkinter as ctk
 class Base:
     app: ctk.CTk = None
     timeline: ctk.CTkToplevel = None
+    passPrompt: ctk.CTkToplevel = None
     ctk = ctk
     fontColor: tuple[str, str] = "#333333", "#cccccc"
     screenSize = 0,0

@@ -1,5 +1,7 @@
+import ast
 import sqlite3
 import os
+import passwd
 from ConfigManager import ConfigManager
 
 class DatabaseHandler:
@@ -33,8 +35,15 @@ class DatabaseHandler:
 
         self.conn.commit()
 
-    def saveImage(self, imgBin, imgCreate):
-        self.cursor.execute("INSERT INTO Images (date_created_ms, image) VALUES (?, ?)", (imgCreate, imgBin))
+    def saveImage(self, imgBin, imgCreate, nocrypt=False):
+        useBin = imgBin
+        useCreate = imgCreate
+        if self.configManager.get("USE_PASSWORD") and not nocrypt:
+            passhash = passwd.passhash
+            useBin = passwd.encrypt(passhash, useBin)
+            useCreate = passwd.encrypt(passhash, str(useCreate))
+
+        self.cursor.execute("INSERT INTO Images (date_created_ms, image) VALUES (?, ?)", (useCreate, useBin))
         self.conn.commit()
 
     def deleteImage(self, imageID):
@@ -45,16 +54,17 @@ class DatabaseHandler:
         if not os.path.exists(dir):
             os.makedirs(dir)
 
-        self.cursor.execute("SELECT id, date_created_ms, image FROM Images")
-        images = self.cursor.fetchall()
+        images = self.getImages()
         
-        for image_id, date, blob_data in images:
-            outputFP = os.path.join(dir, f"{date}_{image_id}.png")
-            
+        for image in images:
+            outputFP = os.path.join(dir, f"{image["date"]}_{image["id"]}.png")
             with open(outputFP, "wb") as file:
-                file.write(blob_data)
+                bin = image["bin"]
+                if isinstance(bin, str):
+                    bin = ast.literal_eval(bin)
+                file.write(bin)
 
-    def getImages(self) -> list[dict]:
+    def getImages(self, nocrypt=False) -> list[dict]:
         rImages = []
         self.cursor.execute("SELECT id, date_created_ms, image FROM Images")
         images = self.cursor.fetchall()
@@ -65,6 +75,13 @@ class DatabaseHandler:
                 "bin": blob_data
             }
             rImages.append(image)
+        
+        if self.configManager.get("USE_PASSWORD") and not nocrypt:
+            passhash = passwd.passhash
+            for img in rImages:
+                img["date"] = int(passwd.decrypt(passhash, img["date"]))
+                img["bin"] = passwd.decrypt(passhash, img["bin"])
+
         return rImages
 
     def deleteAll(self):
@@ -80,3 +97,22 @@ class DatabaseHandler:
 
     def endConnection(self):
         self.conn.close()
+
+    def encryptImages(self, password, nocrypt=False):
+        images = self.getImages(nocrypt)
+        images.sort(key=lambda x: x["id"])
+        self.deleteAll()
+        for image in images:
+            newImageBin = passwd.encrypt(password, image["bin"])
+            newImageDate = passwd.encrypt(password, image["date"])
+            self.saveImage(newImageBin, newImageDate, True)
+
+        del images
+
+    def decryptImages(self):
+        images = self.getImages()
+        self.deleteAll()
+        for image in images:
+            self.saveImage(image["bin"], image["date"], True)
+
+        del images

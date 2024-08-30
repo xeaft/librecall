@@ -6,7 +6,7 @@ class Dropdown(BaseSetting):
 
         self.options = options
 
-        if not _defaultOption:
+        if not _defaultOption or _defaultOption not in self.options:
             _defaultOption = options[0]
 
         self.defaultOption = _defaultOption

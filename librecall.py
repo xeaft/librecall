@@ -32,7 +32,6 @@ from SystemInfo import SystemInfo
 
 sysInfo = SystemInfo()
 
-
 if not os.path.exists(sysInfo.dataDir):
     os.makedirs(sysInfo.dataDir)
 

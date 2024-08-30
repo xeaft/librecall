@@ -1,10 +1,14 @@
 import imageModifier
 import io
+import passwd
+import ast
 from .BaseSetting import BaseSetting, ctk
 from .WindowComponentBase import Base
+from ConfigManager import ConfigManager
 from PIL import Image, ImageTk
 
 class ImagePreview(BaseSetting):
+    configMgr = ConfigManager()
     def __init__(self, image=None, size=(0,0), onImageRender=lambda:0, app=Base.app, _row=-1, _col=-1):
         super().__init__(None, onImageRender, app, _row, _col)
 
@@ -22,6 +26,9 @@ class ImagePreview(BaseSetting):
         frame.grid_columnconfigure(0, weight=1)
     
     def renderImageFromBin(self, bin):
+        if isinstance(bin, str):
+            bin = ast.literal_eval(bin)
+            
         targetSize = Base.getElementSize(self.label)
         if targetSize[0] < 100 or targetSize[1] < 100:
             return

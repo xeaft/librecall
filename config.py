@@ -14,7 +14,10 @@ defaultConfig : dict[str, Any] = {
     "SCREENSHOT_FREQUENCY_MS": 3_600_000, # once per hour
     "SAVE_LOCATION": sysInfo.getLocation(sysInfo.dbPath),
     "DATE_FORMAT": r"%d.%m. %Y %H:%M.%S",
-    "SCREENSHOT_TOOL": ("default" if not sysInfo.isWayland else (availableTools[0] if availableTools else "N/A"))
+    "SCREENSHOT_TOOL": ("default" if not sysInfo.isWayland else (availableTools[0] if availableTools else "N/A")),
+    "USE_PASSWORD": False,
+    "BASEKEY": "",
+    "SALT": ""
 }
 
 config: dict[str, Any] = {}

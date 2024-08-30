@@ -1,14 +1,31 @@
-import time
 import os
+import passPrompts
+import passwd
+import sys
+import tkinter as tk
+import time
 from ConfigManager import ConfigManager
 from DatabaseHandler import DatabaseHandler
-from SystemInfo import SystemInfo
 from Screenshotter import Screenshotter
+from SystemInfo import SystemInfo
+from WindowComponents.WindowComponentBase import Base
 
 def doWork():
     configManager = ConfigManager()
     sysInfo = SystemInfo()
     dbHandler = DatabaseHandler()
+
+    if configManager.get("USE_PASSWORD"):
+        passPrompts.passInput(window=True)
+        while True:
+            time.sleep(0.1)
+            if passwd.passhash:
+                break
+            try:
+                Base.passPrompt.winfo_exists()
+            except tk.TclError:
+                sys.exit(9)
+
 
     dbHandler.makeConnection()
     screenshotFreqMS = configManager.get("SCREENSHOT_FREQUENCY_MS")

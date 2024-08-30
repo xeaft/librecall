@@ -10,12 +10,13 @@ An open-source alternative to Microsoft's "Recall" feature on Windows. Works on 
 Librecall requires 2 python dependencies to run:
 - customtkinter
 - pillow
+- cryptography
 
 \
 Using `pip`, you can download all dependencies with either `python -m pip install -r requirements.txt`, or `python -m pip install customtkinter pillow`\
 \
 On Linux, you are (as always) recommended to use your package manager for system-wide packages.\
-For Arch Linux you can download all dependencies with `sudo pacman -S python-pillow && yay -S python-customtkinter`.\
+For Arch Linux you can download all dependencies with `sudo pacman -S python-pillow && yay -S python-customtkinter python-cryptography`.\
 For other linux distributions.. *use your distros package manager*
 
 Now, for the actual program, you can download it with either one of these options:
@@ -86,7 +87,10 @@ To view the timeline, use `python librecall.py -c` and press the `View timeline`
 
 **Additional info:**\
 All images are in a `png` format.\
-All screenshots are saved in a sqlite3 database (`images.db`). by default, the db is located under the `data` folder under the original directory. this can be changed inside of the config menu.
+All screenshots are saved in a sqlite3 database (`images.db`). by default, the db is located under the `data` folder under the original directory. this can be changed inside of the config menu.\
+Images can be encrypted with a password if you want them to be.\
+If you forget your password, there's (or shouldn't, at least) no way to get your data.\
+Your unique salt and a key used for verifying your password is stored in your config file (data/settings.json). If you delete that file, you will not be able to decrypt your data.
 
 <hr>
 
