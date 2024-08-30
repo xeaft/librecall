@@ -23,17 +23,18 @@ if "--wayland-tools" in sys.argv:
     """)
     sys.exit(0)
 
-import firstTimeDialogue
-import os
-import screenshotProcess
-import shutil
-import window
 from SystemInfo import SystemInfo
+import os
+import shutil
 
 sysInfo = SystemInfo()
 
 if not os.path.exists(sysInfo.dataDir):
     os.makedirs(sysInfo.dataDir)
+
+import firstTimeDialogue
+import screenshotProcess
+import window
 
 legacyPaths: list[str] = [
     os.path.join(sysInfo.fileLocation, ".last.librerecall"),

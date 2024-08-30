@@ -7,7 +7,7 @@ An open-source alternative to Microsoft's "Recall" feature on Windows. Works on 
 <hr>
 
 **Dependencies**\
-Librecall requires 2 python dependencies to run:
+Librecall requires 3 python dependencies to run:
 - customtkinter
 - pillow
 - cryptography
@@ -29,15 +29,15 @@ Now, for the actual program, you can download it with either one of these option
     To build it from source, you will need `pyinstaller` (or some other Python packaging tools).\
     To download `pyinstaller`, you can either download it with `pip` - `python -m pip install pyinstaller`, or use your python package manager ([conda](https://docs.conda.io/en/latest/), [poetry](https://python-poetry.org/), ...). For Linux, its recommended to download the package from your distributions package manager. For Arch Linux, you use the [AUR](https://wiki.archlinux.org/title/Arch_User_Repository) with an [AUR helper](https://wiki.archlinux.org/title/AUR_helpers). With [yay](https://aur.archlinux.org/packages/yay), you use `yay -S pyinstaller`\
     \
-    Now that you have pyinstaller, you need to get the location of your "customtkinter" package. This is going to be in your `site-packages` folder under your python install. Common locations (by which i mean "my locations") are:\
-    On Windows: `C:\Users\[USERNAME]\AppData\Local\Programs\Python\Python[VERSION]\Lib\site-packages\customtkinter` - **use the full path, not `%localappdata%`**\
-    On Linux (system wide): `/usr/lib/python[VERSION]/site-packages/customtkinter`\
+    Now that you have pyinstaller, you need to get the location of your "customtkinter" and "PIL" package. This is going to be in your `site-packages` folder under your python install. Common locations (by which i mean "my locations") are:\
+    On Windows: `C:\Users\[USERNAME]\AppData\Local\Programs\Python\Python[VERSION]\Lib\site-packages\[PACKAGE]` - **use the full path, not `%localappdata%`**\
+    On Linux (system wide): `/usr/lib/python[VERSION]/site-packages/[PACKAGE]`\
     **don't blindly copy this, verify this for your environment.**\
-    Universally, you can get execute `python -c "import customtkinter; print(customtkinter.__file__)"` in your terminal. it will print the path for you.\
+    Universally, you can get execute `python -c "import PACKAGE; import os; print(os.path.dirname(PACKAGE.__file__))"` in your terminal. it will print the path for you.\
     \
-    Now that you got your CTK path, in your terminal, navigate to the project files and run, with your specified customtkinter path instead of "CTK_PATH":\
-    On Windows: `pyinstaller -w -y --clean -n Librecall -D -i img/icon.ico --add-data img;img --add-data CTK_PATH:customtkinter librecall.py`\
-    On Linux: `pyinstaller -y --clean -n Librecall -D --add-data img:img --add-data CTK_PATH:customtkinter librecall.py`
+    Now that you got your CTK and PIL paths, in your terminal, navigate to the project files and run, with your specified package paths instead of their placeholders:\
+    On Windows: `pyinstaller -w -y --clean -n Librecall -D -i img/icon.ico --add-data img;img --add-data CTK_PATH:customtkinter --add-data PIL_PATH:PIL librecall.py`\
+    On Linux: `pyinstaller -y --clean -n Librecall -D --add-data img:img --add-data CTK_PATH:customtkinter --add-data PIL_PATH:PIL librecall.py`
 
     (Troubleshooting) If you downloaded pyinstaller (via pip), but getting an error that pyinstaller wasnt found, either add it to your PATH, or use `python -m PyInstaller` instead of `pyinstaller`\
     \
@@ -45,7 +45,7 @@ Now, for the actual program, you can download it with either one of these option
     \
     (Second variant) If you dont want to do all of this, try running the build script with `python build.py`, should work for most cases.\
     \
-    Now, navigate to the newly created `dist/librecall` folder and use the `librecall` or `librecall.exe` (for Windows) file.\
+    Now, navigate to the newly created `dist/Librecall` folder and use the `Librecall` or `Librecall.exe` (for Windows) file.\
     \
     Keep the original file in the location that its in, and only create shortcuts/symlinks.\
     To access the librecall UI, copy the shortcut, go into its properties (Alt + Enter) and in its destination, add the `-c` flag.\

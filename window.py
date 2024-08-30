@@ -10,7 +10,7 @@ from DatabaseHandler import DatabaseHandler
 
 def createWindow():
     WindowComponents.Base.app = WindowComponents.Base.ctk.CTk()
-    WindowComponents.Base.app.geometry("650x505")
+    WindowComponents.Base.app.geometry("650x485")
     winAddText = ""
     sysinfo = SystemInfo()
     if sysinfo.usedOS == "linux":

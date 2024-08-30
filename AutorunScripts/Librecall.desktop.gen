@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Librecall
+Icon=<ICON_PATH>
+Exec=<PYTHON_PATH> <SCRIPT_PATH> -c
+Type=Application
+Terminal=false
+Categories=Utility;Application

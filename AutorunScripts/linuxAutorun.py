@@ -28,6 +28,7 @@ def doYourThing(argv, systemd):
     homePath = os.path.expanduser("~")
     filePath = os.path.dirname(os.path.abspath(__file__))
     scriptPath = os.path.abspath(os.path.join(filePath, '..'))
+    runner = f"{scriptPath}/dist/Librecall"
     pythonPath = None
     serviceDir = f"{homePath}/.config/systemd/user"
     servicePath = f"{serviceDir}/librecall.service"
@@ -43,7 +44,7 @@ def doYourThing(argv, systemd):
 
     pythonPathArg = getArgv("--python=")
     if pythonPathArg is not None:
-            pythonPath = argv[pythonPathArg].split("=")[1]
+        pythonPath = argv[pythonPathArg].split("=")[1]
 
     def getPythonPath():
         pythonPath = shutil.which("python")
