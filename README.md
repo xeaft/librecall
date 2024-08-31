@@ -105,6 +105,7 @@ Your unique salt and a key used for verifying your password is stored in your co
         - [gnome-screenshot](https://gitlab.gnome.org/GNOME/gnome-screenshot)
         - [scrot](https://github.com/resurrecting-open-source-projects/scrot)
         - [grim](https://sr.ht/~emersion/grim/)
+        - [grimblast](https://github.com/hyprwm/contrib/tree/main/grimblast)
 
 \
 For wayland, not all tools work under all compositors, but all mentioned compositors are supported, you just need to choose the right tool (and set it up correctly).\

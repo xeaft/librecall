@@ -23,7 +23,8 @@ tools: dict[str, callable] = {
     "spectacle": lambda: runCmd(["spectacle", "-nbfo", "/dev/stdout"]).stdout,
     "gnome": gnomeScreenshot,
     "scrot": lambda: runCmd(["scrot", "-"]).stdout,
-    "grim": lambda: runCmd(["grim", "-"]).stdout
+    "grim": lambda: runCmd(["grim", "-"]).stdout,
+    "grimblast": lambda: runCmd(["grimblast", "save", "screen", "-"]).stdout
 }
 
 availableTools: list[str] = [cmd for cmd in tools.keys() if hasCmd(cmd)]

@@ -82,7 +82,7 @@ def createSettingsWindow():
             passPrompts.passInput(ftime, saveUsePass, onQuit=winClose)
         else:
             databaseHandler.makeConnection()
-            databaseHandler.decryptImages(passwd.passhash)
+            databaseHandler.decryptImages()
             databaseHandler.endConnection()
             passwd.passhash = ""
             passwd.salt = ""
