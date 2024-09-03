@@ -1,8 +1,11 @@
+import os
+import random
 import screenshotters
 import traceback
 from PIL import ImageGrab
 from SystemInfo import SystemInfo
 from ConfigManager import ConfigManager
+
 
 class Screenshotter:
     _insts = []
@@ -10,7 +13,7 @@ class Screenshotter:
     def __new__(cls):
         if Screenshotter._insts:
             return Screenshotter._insts[0]
-        
+
         screenshotter = super().__new__(cls)
         Screenshotter._insts.append(screenshotter)
 
@@ -25,7 +28,8 @@ class Screenshotter:
             return self.getCustomToolScreenshot()
         except Exception as e:
             if not self.sysInfo.info:
-                print("Falied to take a screenshot. This might be an issue with your compositor/screenshotting tool")
+                print(
+                    "Falied to take a screenshot. This might be an issue with your compositor/screenshotting tool")
             else:
                 print("Failed to take a screenshot")
                 print(f"Screenshotting tool: {self.tool}")
@@ -43,7 +47,7 @@ class Screenshotter:
         screenshot.save(path)
 
         imgBin = None
-        
+
         try:
             with open(path, "rb") as img:
                 imgBin = img.read()
@@ -57,7 +61,7 @@ class Screenshotter:
         if self.sysInfo.isWayland:
             screenshotBin = self.handleWaylandScreenshot()
         else:
-            if self.sysInfo.screenshotTool == "default":
+            if self.configManager.get("SCREENSHOT_TOOL").lower() == "default":
                 screenshotBin = self.getPILScreenshotBin()
             else:
                 screenshotBin = self.getCustomToolScreenshot()

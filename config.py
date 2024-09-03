@@ -7,14 +7,14 @@ from screenshotters import availableTools
 
 sysInfo = SystemInfo()
 
-defaultConfig : dict[str, Any] = {
+defaultConfig: dict[str, Any] = {
     "ENABLED": True,
     "AUTO_DELETE_TYPE": "Disabled",
     "DELETE_AFTER_PERIOD": 1,
-    "SCREENSHOT_FREQUENCY_MS": 3_600_000, # once per hour
+    "SCREENSHOT_FREQUENCY_MS": 3_600_000,  # once per hour
     "SAVE_LOCATION": sysInfo.getLocation(sysInfo.dbPath),
     "DATE_FORMAT": r"%d.%m. %Y %H:%M.%S",
-    "SCREENSHOT_TOOL": ("default" if not sysInfo.isWayland else (availableTools[0] if availableTools else "N/A")),
+    "SCREENSHOT_TOOL": ("Default" if not sysInfo.isWayland else (availableTools[0] if availableTools else "N/A")),
     "USE_PASSWORD": False,
     "BASEKEY": "",
     "SALT": ""
@@ -22,6 +22,7 @@ defaultConfig : dict[str, Any] = {
 
 config: dict[str, Any] = {}
 savePath = f"{sysInfo.dataDir}/settings.json"
+
 
 def makeConfigIfNotExists() -> None:
     file = None
@@ -37,24 +38,25 @@ def makeConfigIfNotExists() -> None:
         if file:
             file.close()
 
-def loadConfig() -> dict:
+
+def loadConfig():
     global config
     data = {}
     makeConfigIfNotExists()
     with open(savePath, "r") as settingsFile:
         settings = settingsFile.read()
         data = json.loads(settings)
-    
+
     targetKeys = list(defaultConfig.keys())
     for i in targetKeys:
         if i not in data:
             data[i] = defaultConfig[i]
 
-    if data["SCREENSHOT_TOOL"] == "default" and sysInfo.isWayland:
+    if data["SCREENSHOT_TOOL"] == "Default" and sysInfo.isWayland:
         data["SCREENSHOT_TOOL"] = defaultConfig["SCREENSHOT_TOOL"]
 
     config = data
-    
+
 
 def saveConfig() -> bool:
     shutil.copyfile(savePath, f"{savePath}.bak")
@@ -65,7 +67,7 @@ def saveConfig() -> bool:
         return False
     else:
         os.remove(f"{savePath}.bak")
-    
+
     return True
 
 
@@ -73,7 +75,7 @@ def _saveConfigFile() -> bool:
     succ: bool = False
 
     try:
-        with open(savePath, "w") as f:        
+        with open(savePath, "w") as f:
             f.write(json.dumps(config))
             succ = True
     except:
@@ -81,10 +83,12 @@ def _saveConfigFile() -> bool:
 
     return succ
 
+
 def get(setting: str) -> Any:
     if setting in config:
         return config[setting]
-    
+
+
 def set(setting: str, value: Any) -> bool:
     config[setting] = value
     return saveConfig()

@@ -103,7 +103,7 @@ def createSettingsWindow():
     autoDeleteMethodDropdown = WindowComponents.Dropdown("Auto delete method", ["Disabled", "Hours", "Minutes"], configManager.get("AUTO_DELETE_TYPE"), dropdown_autoDeleteMethod)
     autoDeleteIntervalSlider = WindowComponents.Slider("Auto delete interval", configManager.get("DELETE_AFTER_PERIOD"), 1, 30, slider_autoDeleteInterval)
 
-    dbDirectoryTextbox = WindowComponents.TextInput("Directory", configManager.get("SAVE_LOCATION"), textbox_directory, "[a-zA-Z0-9_/\\-. s]")
+    dbDirectoryTextbox = WindowComponents.TextInput("Directory", configManager.get("SAVE_LOCATION"), textbox_directory, "[a-zA-Z0-9_/\\\\\-. s]")
 
     dateTimeFormatTextbox = WindowComponents.TextInput("Timeline date format", configManager.get("DATE_FORMAT"), textbox_dateFormat)
 

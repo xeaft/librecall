@@ -4,13 +4,14 @@ import os
 import passwd
 from ConfigManager import ConfigManager
 
+
 class DatabaseHandler:
     _insts = []
 
     def __new__(cls):
         if DatabaseHandler._insts:
             return DatabaseHandler._insts[0]
-        
+
         dbHandler = super().__new__(cls)
         DatabaseHandler._insts.append(dbHandler)
 
@@ -20,7 +21,7 @@ class DatabaseHandler:
         dbHandler.loc = dbHandler.configManager.get("SAVE_LOCATION")
 
         return dbHandler
-        
+
     def makeConnection(self):
         self.conn = sqlite3.connect(self.loc)
         self.cursor = self.conn.cursor()
@@ -43,7 +44,8 @@ class DatabaseHandler:
             useBin = passwd.encrypt(passhash, useBin)
             useCreate = passwd.encrypt(passhash, str(useCreate))
 
-        self.cursor.execute("INSERT INTO Images (date_created_ms, image) VALUES (?, ?)", (useCreate, useBin))
+        self.cursor.execute(
+            "INSERT INTO Images (date_created_ms, image) VALUES (?, ?)", (useCreate, useBin))
         self.conn.commit()
 
     def deleteImage(self, imageID):
@@ -55,9 +57,9 @@ class DatabaseHandler:
             os.makedirs(dir)
 
         images = self.getImages()
-        
+
         for image in images:
-            outputFP = os.path.join(dir, f"{image["date"]}_{image["id"]}.png")
+            outputFP = os.path.join(dir, f"{image['date']}_{image['id']}.png")
             with open(outputFP, "wb") as file:
                 bin = image["bin"]
                 if isinstance(bin, str):
@@ -75,7 +77,7 @@ class DatabaseHandler:
                 "bin": blob_data
             }
             rImages.append(image)
-        
+
         if self.configManager.get("USE_PASSWORD") and not nocrypt:
             passhash = passwd.passhash
             for img in rImages:

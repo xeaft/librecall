@@ -1,11 +1,19 @@
 import os
 import subprocess
+from SystemInfo import SystemInfo
 
-def runCmd(cmd : list[str]) -> subprocess.CompletedProcess:
-    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+sysInfo: SystemInfo = SystemInfo()
 
-def hasCmd(cmd : str) -> bool:
-    return len(runCmd(["which", cmd]).stdout) > 0
+def runCmd(cmd: list[str]) -> subprocess.CompletedProcess:
+    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
+
+
+def hasCmd(cmd: str) -> bool:
+    runcmd: list[str] = ["which", cmd]
+    if os.name.lower() == "nt":
+        runcmd = ["powershell", "-Command", f"(Get-Command {cmd}).Path"]
+    return len(runCmd(runcmd).stdout) > 0
+
 
 def gnomeScreenshot():
     filename = ".lc-gnome-sc.tmp.png"
@@ -18,6 +26,7 @@ def gnomeScreenshot():
 
     return data
 
+
 tools: dict[str, callable] = {
     "flameshot": lambda: runCmd(["flameshot", "full", "--raw"]).stdout,
     "spectacle": lambda: runCmd(["spectacle", "-nbfo", "/dev/stdout"]).stdout,
@@ -27,4 +36,5 @@ tools: dict[str, callable] = {
     "grimblast": lambda: runCmd(["grimblast", "save", "screen", "-"]).stdout
 }
 
-availableTools: list[str] = [cmd for cmd in tools.keys() if hasCmd(cmd)]
+defaultTool = ["Default"] if not sysInfo.isWaylandSession() else []
+availableTools: list[str] = defaultTool + [cmd for cmd in tools.keys() if hasCmd(cmd)]
