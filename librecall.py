@@ -13,6 +13,7 @@ if "--wayland-tools" in sys.argv:
         - spectacle
         - scrot
         - gnome-screenshot
+        - grimblast
 
         You can download any of these with your package manager, and
         make sure it actually works under your compositor.

@@ -1,4 +1,5 @@
 from .BaseSetting import BaseSetting, ctk, Base
+from .Notification import Notification
 
 class Dropdown(BaseSetting):
     def __init__(self, title, options, _defaultOption=None, _callback=lambda x:x, _app=Base.app, _row=-1, _col=-1):
@@ -7,7 +8,10 @@ class Dropdown(BaseSetting):
         self.options = options
 
         if not _defaultOption or _defaultOption not in self.options:
-            _defaultOption = options[0]
+            if len(options):
+                _defaultOption = options[0]
+            else:
+                Notification("Error", "No screenshotting tool available")
 
         self.defaultOption = _defaultOption
         

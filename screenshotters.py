@@ -5,8 +5,9 @@ from SystemInfo import SystemInfo
 sysInfo: SystemInfo = SystemInfo()
 
 def runCmd(cmd: list[str]) -> subprocess.CompletedProcess:
-    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
-
+    if sysInfo.usedOS == "windows":
+        return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
+    return subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 def hasCmd(cmd: str) -> bool:
     runcmd: list[str] = ["which", cmd]

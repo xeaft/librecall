@@ -8,6 +8,7 @@ class Notification:
         self.toplevel = ctk.CTkToplevel()
         self.toplevel.geometry("300x150")
         self.toplevel.resizable(False, False)
+        self.toplevel.title(title)
 
         titleLabel = ctk.CTkTextbox(self.toplevel, font=(
             None, 18), text_color=Base.fontColor)

@@ -1,6 +1,7 @@
 import os
 import random
 import screenshotters
+import sys
 import traceback
 from PIL import ImageGrab
 from SystemInfo import SystemInfo
